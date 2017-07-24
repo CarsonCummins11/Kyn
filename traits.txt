@@ -1,40 +1,64 @@
-0 = recessive
-1 = dominant
-2 = can blend (based on multiple genes)
-3 = mutation (may not/is often not passed down through families)
+0 = recessive autosomal
+1 = dominant autosomal
+2 = recessive chromosomal
+3 = dominant chromosomal
+4 = can blend (based on multiple genes)
+5 = mutation (may not/is often not passed down through families)
 
-Red Hair: 2, Autosomal
-Brown Hair: 2, Autosomal
-Black Hair: 2, Autosomal
-Blonde Hair: 2, Autosomal
+Red Hair: 4
+Brown Hair: 4
+Black Hair: 4
+Blonde Hair: 4
 
-Blue Eyes: 2, Autosomal
-Brown Eyes: 2, Autosomal
-Green Eyes: 2, Autosomal
-Grey Eyes: 2, Autosomal
-Hazel Eyes: 2, Autosomal
+Blue Eyes: 4
+Brown Eyes: 4
+Green Eyes: 4
+Grey Eyes: 4
+Hazel Eyes: 4
 
-Attatched Earlobe: 0, Autosomal
-Unattatched Earlobe: 1, Autosomal
+Attatched Earlobe: 0
+Unattatched Earlobe: 1
 
-Dimples: 1 (irregular), Autosomal
-No Dimples: 0, Autosomal 
+Widow's Peak: 1
+Straight Hairline: 0
 
-Freckles: 1, Autosomal
-No Freckles: 0, Autosomal
+Dimples: 1
+Freckles: 1
+Able to taste PTC: 1
+Non-pigmented Iris: 0
+Bent Little Finger: 1
+Hitchhiker’s Thumb: 4
+Red-Green Colorblind: 2
 
-Able to taste PTC: 1, Autosomal
-Unable to taste PTC: 0, Autosomal
-
-Pigmented Iris: 1, Autosomal
-Non-pigmented Iris (leads to different shades of blue eyes): 0, Autosomal
-
-Widow's Peak: 1, Autosomal
-Straight Hairline: 0, Autosomal
-
-Bent Little Finger: 1, Autosomal
-Straight Little Finger: 0, Autosomal
-
-Hitchhiker’s Thumb: 2, Autosomal
-
-Red-Green Colorblind: 0, Chromosomal
+Achondroplasia: 20% 1, 80% 5
+Amyotrophic lateral sclerosis: 10% 1, 90% 5
+Beta thalassemia: 0, A
+Crouzon syndrome: 1, A
+Cystic fibrosis: 0, A
+Duchenne and Becker muscular dystrophy: 2
+Familial dysautonomia: 0
+Fanconi anaemia: 0 (Ocassionaly 2)
+Fragile X: 3
+Glutaric aciduria type 1: 0
+Haemophilia A and B: 2
+Hemophagocytic lymphohistiocytosis: 0
+Holt-Oram syndrome: 1
+Huntington's disease: 1
+Hypokalaemic periodic paralysis: 1
+Incontinentia pigmenti: 3
+Lynch syndrome: 1
+Marfan syndrome: 75% 1, 25% 5
+Menkes disease: 2
+Metachromatic leukodystrophy: 0
+Mucopolysaccharidosis type II (Hunter syndrome): 2
+Myotonic dystrophy: 1
+Neurofibromatosis type I and II: 50% 1, 50% 5
+Norrie syndrome: 2
+Pompe's syndrome: 0
+Sickle cell anaemia: 0
+Smith-Lemli-Opitz syndrome: 0
+Spastic paraplegia 4: most 1, some 5
+Spondylometaphyseal dysplasia: 1
+Tay-Sachs disease: 0
+Tuberous sclerosis: 33% 1, 66% 5
+Von Hippel-Lindau syndrome: 1
