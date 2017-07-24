@@ -3,7 +3,8 @@
 2 = recessive chromosomal
 3 = dominant chromosomal
 4 = can blend (based on multiple genes)
-5 = mutation (may not/is often not passed down through families)
+5 = mutation
+* = multiple ways to inherit, may not want to use
 
 Red Hair: 4
 Brown Hair: 4
