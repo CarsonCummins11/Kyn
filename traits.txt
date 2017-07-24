@@ -1,0 +1,40 @@
+0 = recessive
+1 = dominant
+2 = can blend (based on multiple genes)
+3 = mutation (may not/is often not passed down through families)
+
+Red Hair: 2, Autosomal
+Brown Hair: 2, Autosomal
+Black Hair: 2, Autosomal
+Blonde Hair: 2, Autosomal
+
+Blue Eyes: 2, Autosomal
+Brown Eyes: 2, Autosomal
+Green Eyes: 2, Autosomal
+Grey Eyes: 2, Autosomal
+Hazel Eyes: 2, Autosomal
+
+Attatched Earlobe: 0, Autosomal
+Unattatched Earlobe: 1, Autosomal
+
+Dimples: 1 (irregular), Autosomal
+No Dimples: 0, Autosomal 
+
+Freckles: 1, Autosomal
+No Freckles: 0, Autosomal
+
+Able to taste PTC: 1, Autosomal
+Unable to taste PTC: 0, Autosomal
+
+Pigmented Iris: 1, Autosomal
+Non-pigmented Iris (leads to different shades of blue eyes): 0, Autosomal
+
+Widow's Peak: 1, Autosomal
+Straight Hairline: 0, Autosomal
+
+Bent Little Finger: 1, Autosomal
+Straight Little Finger: 0, Autosomal
+
+Hitchhiker’s Thumb: 2, Autosomal
+
+Red-Green Colorblind: 0, Chromosomal
