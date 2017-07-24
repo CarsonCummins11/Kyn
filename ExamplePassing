@@ -1,0 +1,6 @@
+1 <- This is the trait type (Kayden is making a key for what each in means)
+0 <- This is either 1 or a 0, indicates whether or not it is a carrier
+36 <- row is first number, column is second, this is its own row and column
+23 <- row is first number, column is second, this is the first parent's row and column
+27 <- row is first number, column is second this is the second parent's row and column
+1 <- This is the start of a new ancestor
