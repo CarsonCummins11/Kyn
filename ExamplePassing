@@ -1,3 +1,4 @@
+18 <- This is the number of ancestors the user entered
 1 <- This is the trait type (Kayden is making a key for what each in means)
 0 <- This is either 1 or a 0, indicates whether or not it is a carrier (1 is carrier)
 3 <- This is its owm row
