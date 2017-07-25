@@ -4,4 +4,3 @@
 3 <- This is its owm row
 6 <- This is its own column
 0 <- This determines whether the ancestor is the parent of the offspring in question (1 is parent of offspring)
-1 <- This is the start of a new ancestor
