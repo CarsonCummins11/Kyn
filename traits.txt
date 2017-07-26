@@ -1,7 +1,7 @@
 0 = recessive autosomal
 1 = dominant autosomal
-2 = recessive chromosomal
-3 = dominant chromosomal
+2 = recessive x-linked (chromosomal)
+3 = dominant x-linked (chromosomal)
 4 = can blend (based on multiple genes)
 5 = mutation
 * = multiple ways to inherit, may not want to use
@@ -38,15 +38,16 @@ Crouzon syndrome: 1
 Cystic fibrosis: 0
 Duchenne and Becker muscular dystrophy: 2
 Familial dysautonomia: 0
-*Fanconi anaemia: 0 (Ocassionaly 2)
-Fragile X: 3
+*Fanconi anemia: 0 (Ocassionaly 2)
+Fragile X syndrome: 3
 Glutaric aciduria type 1: 0
-Haemophilia A and B: 2
+Hemophilia A: 2
+Hemophilia B: 2
 Hemophagocytic lymphohistiocytosis: 0
 Holt-Oram syndrome: 1
 Hunter syndrome: 2
 Huntington's disease: 1
-Hypokalaemic periodic paralysis: 1
+Hypokalemic periodic paralysis: 1
 Incontinentia pigmenti: 3
 Lynch syndrome: 1
 *Marfan syndrome: 75% 1, 25% 5
@@ -56,10 +57,10 @@ Myotonic dystrophy: 1
 *Neurofibromatosis: 50% 1, 50% 5
 Norrie syndrome: 2
 Pompe's syndrome: 0
-Sickle cell anaemia: 0
+Sickle cell anemia: 0
 Smith-Lemli-Opitz syndrome: 0
 *Spastic paraplegia 4: most 1, some 5
-Spondylometaphyseal dysplasia: 1
+Spondyloepiphyseal dysplasia congenita: 1
 Tay-Sachs disease: 0
-*Tuberous sclerosis: 33% 1, 66% 5
+*Tuberous sclerosis complex: 33% 1, 66% 5
 Von Hippel-Lindau syndrome: 1
