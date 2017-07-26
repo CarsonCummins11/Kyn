@@ -13,6 +13,7 @@ public class Surface extends JPanel {
 	RelationMenu relmenu = null;
 	ArrayList<Member[]> lines = new ArrayList<Member[]>();
 	ArrayList<Integer> Relations = new ArrayList<Integer>();
+	Member[] Parents = new Member[2];
 	public static final int CIRCLE_DIAMETER = 20;
 
 	public Surface() {
@@ -38,9 +39,25 @@ public class Surface extends JPanel {
 			} else {
 				g.setColor(Color.BLUE);
 			}
-			g.drawOval(x - CIRCLE_DIAMETER / 2, y - CIRCLE_DIAMETER / 2, CIRCLE_DIAMETER, CIRCLE_DIAMETER);
+			g.fillOval(x - CIRCLE_DIAMETER / 2, y - CIRCLE_DIAMETER / 2, CIRCLE_DIAMETER, CIRCLE_DIAMETER);
 			g.setColor(Color.black);
 		}
+		for (int i = 0; i < Parents.length; i++) {
+			float r = (float) .99;
+			float gg = (float).98;
+			float b = (float).41;
+			float a = (float).50;
+			if(Parents[i]!=null){
+			g.setColor(new Color(r,gg,b,a));
+			g.fillRect(Parents[i].X, Parents[i].Y, Member.IMAGE_SIZE, Member.IMAGE_SIZE);
+			}
+		
+		}
+		g.setColor(Color.black);
+		g2.setStroke(new BasicStroke(9));
+		g2.drawLine(0, 0, 0, this.getHeight());
+		g.drawString("Oldest", 20, 5);
+		g.drawString("Youngest", 20, this.getHeight()-5);
 		if (relmenu != null) {
 			relmenu.draw(g);
 		}

@@ -11,9 +11,10 @@ public class RelationMenu {
 	public static final int HEIGHT = 200;
 	public static final int LINE_GAP = 20;
 
-	public RelationMenu(int x, int y) {
+	public RelationMenu(int x, int y, int Stat) {
 		X = x;
 		Y = y;
+		Status = Stat;
 	}
 
 	public void draw(Graphics g) {

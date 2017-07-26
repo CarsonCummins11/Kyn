@@ -6,10 +6,14 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -28,15 +32,17 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	Menu showing;
 	Member strt = null;
 	Point PP;
-
+	JButton startCalc = new JButton();
+	Member[] parents = new Member[2];
+public static final String DATA_OUTPUT_FILE = "data.txt"; 
 	public Center() {
+		
 		s.addMouseListener(this);
 		s.addMouseMotionListener(this);
 		f.setVisible(true);
 		menu.setLayout(new GridLayout(3, 1));
 		menu.add(addMem);
 		f.setSize(500, 500);
-		menu.add(new JPanel());
 		menu.add(new JPanel());
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setLayout(new BorderLayout());
@@ -45,9 +51,16 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		addMem.setMargin(new Insets(0, 0, 0, 0));
 		addMem.setBorder(null);
 		addMem.setBackground(null);
+		startCalc.setMargin(new Insets(0,0,0,0));
+		startCalc.setBorder(null);
+		startCalc.setBorder(null);
+		startCalc.addActionListener(this);
+		menu.add(startCalc);
 		try {
-			Image img = ImageIO.read(new File("addMember.png"));
-			addMem.setIcon(new ImageIcon(img));
+			Image img1 = ImageIO.read(new File("addMember.png"));
+			addMem.setIcon(new ImageIcon(img1));
+			Image img2= ImageIO.read(new File("startCalculation.png"));
+			startCalc.setIcon(new ImageIcon(img2));
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -88,7 +101,9 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	public void mousePressed(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
+		if(e.getClickCount()<2){
 		if (e.getButton() == MouseEvent.BUTTON1 && movable) {
+			
 			if (m == null) {
 				m = getClicked(x, y);
 
@@ -105,7 +120,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 				f.repaint();
 			} else {
 				if (isNode(x, y)) {
-					s.relmenu = new RelationMenu(x, y);
+					s.relmenu = new RelationMenu(x, y, s.Relations.get(findIndexOfMidpoint(s.lines,x,y)));
 					movable = false;
 					PP = new Point(x,y);
 					f.repaint();
@@ -185,6 +200,22 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			}
 
 		}
+		}else{
+			if(e.getButton()==MouseEvent.BUTTON1){
+				if(getClicked(x, y)!=null&&(!getClicked(x,y).equals(parents[0]))&&(!getClicked(x,y).equals(parents[1]))){
+					if(parents[0]==null){
+						parents[0]=getClicked(x,y);
+					}else if(parents[1]==null){
+						parents[1]=getClicked(x,y);
+					}else{
+						parents[(int)Math.round(Math.random())]=getClicked(x,y);
+					}
+					s.Parents[0] = parents[0];
+					s.Parents[1] = parents[1];
+					f.repaint();
+				}
+			}
+		}
 	}
 
 	public int findIndexOfMidpoint(ArrayList<Member[]> lines, int x, int y) {
@@ -262,11 +293,88 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		if(e.getSource().equals(addMem)){
 		Member mem = new Member(Member.MALE, false, 0, 0);
 		s.members.add(mem);
 		Members.add(mem);
 		f.repaint();
+		}else{
+			String familyTree = buildStringFromTree();
+			try {
+				PrintWriter write = new PrintWriter(DATA_OUTPUT_FILE);
+				write.print(familyTree);
+				write.close();
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			
+		}
 
+	}
+
+	public String buildStringFromTree() {
+		String ret = "";
+		for (int i = 0; i < s.lines.size(); i++) {
+			if(s.Relations.get(i)==RelationMenu.MARRIED){
+				if(!s.lines.get(i)[0].Married.contains(s.lines.get(i)[1])){
+					s.lines.get(i)[0].Married.add(s.lines.get(i)[1]);
+				}
+				if(!s.lines.get(i)[1].Married.contains(s.lines.get(i)[0])){
+					s.lines.get(i)[1].Married.add(s.lines.get(i)[0]);
+				}
+			}else{
+				Member P1 = s.lines.get(i)[0];
+				Member P2 = s.lines.get(i)[1];
+				if(P1.Y>P2.Y&&!P1.Parents.contains(P2)&&!P2.Children.contains(P1)){
+					P1.Parents.add(P2);
+					P2.Children.add(P1);
+				}else if (P2.Y>P1.Y&&P2.Parents.contains(P1)&&!P1.Children.contains(P2)){
+					P2.Parents.add(P1);
+					P1.Children.add(P2);
+				}
+			}
+		}
+		for (int i = 0; i < s.members.size(); i++) {
+			ret+=s.members.get(i).Carrier?"true\n":"false\n";
+			if(s.Parents[0].equals(s.members.get(i))||s.Parents[1].equals(s.members.get(i))){
+				ret+="true\n";
+			}else{
+				ret+="false\n";
+			}
+			ret+=getRow(s.members.get(i))+"\n";
+			ret+=getColumn(s.members.get(i))+"\n";
+			for (int j = 0; j < s.members.get(i).Parents.size(); j++) {
+				ret+=getRow(s.members.get(i).Parents.get(i));
+				ret+=getColumn(s.members.get(i).Parents.get(i));
+			}
+			for (int j = 0; j < s.members.get(i).Married.size(); j++) {
+				ret+=getRow(s.members.get(i).Married.get(i));
+				ret+=getColumn(s.members.get(i).Married.get(i));
+			}
+			
+		}
+		return ret;
+	}
+
+	private String getRow(Member mm) {
+		
+		return Integer.toString(mm.relations(0,0,s.members.size()*2));
+	}
+
+	
+
+	private String getColumn(Member member) {
+		int a;
+		ArrayList<Integer> usedCols =new ArrayList<Integer>();
+		for (int i = 0; i < s.members.size(); i++) {
+			if(s.members.get(i).column!=-1){
+				usedCols.add(s.members.get(i).column);
+			}
+		}
+		while(!usedCols.contains((a=(int)Math.round(s.members.size()*Math.random())))){
+		//nothing	
+		}
+		return Integer.toString(a);
 	}
 
 	@Override
@@ -283,5 +391,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		}
 
 	}
+
+	
 
 }
