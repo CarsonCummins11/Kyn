@@ -19,6 +19,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class Center implements MouseListener, ActionListener, MouseMotionListener {
@@ -300,6 +301,7 @@ public static final String DATA_OUTPUT_FILE = "data.txt";
 		f.repaint();
 		}else{
 			String familyTree = buildStringFromTree();
+			if (familyTree!=null){
 			try {
 				PrintWriter write = new PrintWriter(DATA_OUTPUT_FILE);
 				write.print(familyTree);
@@ -308,6 +310,9 @@ public static final String DATA_OUTPUT_FILE = "data.txt";
 				e1.printStackTrace();
 			}
 			
+		}else{
+			return;
+		}
 		}
 
 	}
@@ -336,6 +341,10 @@ public static final String DATA_OUTPUT_FILE = "data.txt";
 		}
 		for (int i = 0; i < s.members.size(); i++) {
 			ret+=s.members.get(i).Carrier?"true\n":"false\n";
+			if(s.Parents[0]==null||s.Parents[1]==null){
+				JOptionPane.showMessageDialog(f, "Please select two parents by double clicking");
+				return null;
+			}
 			if(s.Parents[0].equals(s.members.get(i))||s.Parents[1].equals(s.members.get(i))){
 				ret+="true\n";
 			}else{
