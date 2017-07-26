@@ -65,11 +65,11 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	}
 
 	public Member getClicked(int x, int y) {
-		System.out.println(x+","+y);
+	
 		for (int i = 0; i < Members.size(); i++) {
 			int XX = s.members.get(i).X;
 			int YY = s.members.get(i).Y;
-			if ((x>XX&&x<XX+Member.IMAGE_SIZE)&&(y>YY&&y<YY+Member.IMAGE_SIZE)) {
+			if ((x > XX && x < XX + Member.IMAGE_SIZE) && (y > YY && y < YY + Member.IMAGE_SIZE)) {
 				return Members.get(i);
 			}
 		}
@@ -95,7 +95,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			} else {
 				m = null;
 			}
-			//If you press the middle button
+			// If you press the middle button
 		} else if (e.getButton() == MouseEvent.BUTTON3 && movable) {
 			m = getClicked(x, y);
 			if (m != null) {
@@ -107,11 +107,9 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 				if (isNode(x, y)) {
 					s.relmenu = new RelationMenu(x, y);
 					movable = false;
-					PP = new Point();
-					PP.x = x;
-					PP.y = y;
+					PP = new Point(x,y);
 					f.repaint();
-					System.out.println("hello");
+			
 				}
 			}
 		} else if (e.getButton() == MouseEvent.BUTTON1 && !movable) {
@@ -124,7 +122,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 					m = null;
 					return;
 				} else {
-					System.out.println(clicked);
+				
 					switch (clicked) {
 					case 1:
 						m.Gender = Member.MALE;
@@ -133,11 +131,11 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 						m.Gender = Member.FEMALE;
 						break;
 					case 3:
-						System.out.println("here");
+				
 						m.Carrier = true;
 						break;
 					case 4:
-						System.out.println("yo");
+					
 						m.Carrier = false;
 						break;
 					default:
@@ -161,22 +159,24 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 					s.relmenu = null;
 					movable = true;
 					f.repaint();
+					PP = new Point();
 					break;
 				}
-				if(clicked!=3){
-				s.Relations.set(findIndexOfMidpoint(s.lines, PP.x, PP.y), s.relmenu.Status);
-				f.repaint();
+				if (clicked != 3) {
+					s.Relations.set(findIndexOfMidpoint(s.lines, PP.x, PP.y), s.relmenu.Status);
+					f.repaint();
+					
 				}
 			}
-			//If there you click on the second button, the middle button
+			// If there you click on the second button, the middle button
 		} else if (e.getButton() == MouseEvent.BUTTON2) {
-			//If the click is on an object
+			// If the click is on an object
 			if (getClicked(x, y) != null) {
 				if (strt != null) {
 					Member[] temp = { getClicked(x, y), strt };
 					s.lines.add(temp);
 					s.Relations.add(RelationMenu.MARRIED);
-					//Redraw the frame
+					// Redraw the frame
 					f.repaint();
 					strt = null;
 				} else {
@@ -188,15 +188,15 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	}
 
 	public int findIndexOfMidpoint(ArrayList<Member[]> lines, int x, int y) {
+		System.out.println(x+","+y);
 		for (int i = 0; i < lines.size(); i++) {
-			if (Point.distance(
-					getMidpoint(lines.get(i)[0].X, lines.get(i)[0].Y, lines.get(i)[1].X, lines.get(i)[1].Y).x,
-					getMidpoint(lines.get(i)[0].X, lines.get(i)[0].Y, lines.get(i)[1].X, lines.get(i)[1].Y).y, x,
-					y) < Surface.CIRCLE_DIAMETER) {
+			Point pp = getMidpoint(lines.get(i)[0].X+Member.IMAGE_SIZE/2, lines.get(i)[0].Y+Member.IMAGE_SIZE/2, lines.get(i)[1].X+Member.IMAGE_SIZE/2, lines.get(i)[1].Y+Member.IMAGE_SIZE/2);
+			System.out.println(pp.x+","+pp.y);
+			if (pp.distance(new Point(x,y)) < Surface.CIRCLE_DIAMETER) {
 				return i;
 			}
 		}
-		return 0;
+		return -1;
 	}
 
 	public int getClickedRel(int x, int y) {
@@ -222,15 +222,15 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 
 	public boolean isNode(int x, int y) {
 		for (int i = 0; i < s.lines.size(); i++) {
-			Point p = getMidpoint(s.lines.get(i)[0].X+Member.IMAGE_SIZE/2, s.lines.get(i)[0].Y+Member.IMAGE_SIZE/2, s.lines.get(i)[1].X+Member.IMAGE_SIZE/2, s.lines.get(i)[1].Y+Member.IMAGE_SIZE/2);
-			System.out.println(p.x+","+p.y);
-			System.out.println(x+","+y);
+			Point p = getMidpoint(s.lines.get(i)[0].X + Member.IMAGE_SIZE / 2,
+					s.lines.get(i)[0].Y + Member.IMAGE_SIZE / 2, s.lines.get(i)[1].X + Member.IMAGE_SIZE / 2,
+					s.lines.get(i)[1].Y + Member.IMAGE_SIZE / 2);
+			
 			if (Point.distance(p.x, p.y, x, y) < Surface.CIRCLE_DIAMETER) {
-				System.out.println("eyy");
 				return true;
 			}
 		}
-		System.out.println("yo");
+		
 		return false;
 	}
 
@@ -281,7 +281,6 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			m.Y = e.getY() - Member.IMAGE_SIZE / 2;
 			f.repaint();
 		}
-		
 
 	}
 
