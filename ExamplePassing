@@ -1,9 +1,9 @@
-1 <- This is the trait type (Kayden is making a key for what each in means)
+1 <- This is the trait type (0 = recessive / 1 = dominant)
 true <- This is either true or false. (indicates whether or not it is a carrier)
 true <- This is either true or false. (If the person is a parent of the offspring in question)
 3 <- it's own row
 6 <- it's own column
-2 <- it's first parents row
+2 <- it's first parents row (if no parent there will be a -1)
 3 <- it's first parents column
 2 <- it's second parent's row
 7 <- it's second parent's column
