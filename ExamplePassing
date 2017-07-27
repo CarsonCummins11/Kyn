@@ -2,7 +2,7 @@
 1 <- This is the trait type (0 = recessive / 1 = dominant)
 0 <- This is either 0 (not_carrier) or 1 (carrier). (indicates whether or not it is a carrier)
 1 <- This is either 0(no) or 1(yes. (If the person is a parent of the offspring in question)
-3 <- it's own row
+3 <- it's own generation
 6 <- it's own child number
 3 <- it's first parent's child number (if no parent there will be a -1)
 7 <- it's second parent's child number (if no parent there will be a -1)
