@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 public class Member {
 	final static int MALE = 0;
 	final static int FEMALE = 1;
-	final static int IMAGE_SIZE = 100;
+	final static int IMAGE_SIZE = 50;
 	int Gender;
 	boolean Carrier;
 	ArrayList<Member> Married = new ArrayList<Member>();
@@ -39,15 +39,15 @@ public class Member {
 
 	}
 
-	public void draw(Graphics g) {
+	public void draw(Graphics g,double zoom) {
 		if (Carrier && Gender == MALE) {
-			g.drawImage(maleCarrier, X, Y, IMAGE_SIZE, IMAGE_SIZE, null);
+			g.drawImage(maleCarrier, X, Y, (int)Math.round(IMAGE_SIZE*zoom), (int)Math.round(IMAGE_SIZE*zoom), null);
 		} else if (Carrier && Gender == FEMALE) {
-			g.drawImage(femaleCarrier, X, Y, IMAGE_SIZE, IMAGE_SIZE, null);
+			g.drawImage(femaleCarrier, X, Y, (int)Math.round(IMAGE_SIZE*zoom), (int)Math.round(IMAGE_SIZE*zoom), null);
 		} else if (!Carrier && Gender == MALE) {
-			g.drawImage(maleNonCarrier, X, Y, IMAGE_SIZE, IMAGE_SIZE, null);
+			g.drawImage(maleNonCarrier, X, Y, (int)Math.round(IMAGE_SIZE*zoom), (int)Math.round(IMAGE_SIZE*zoom), null);
 		} else if (!Carrier && Gender == FEMALE) {
-			g.drawImage(femaleNonCarrier, X, Y, IMAGE_SIZE, IMAGE_SIZE, null);
+			g.drawImage(femaleNonCarrier, X, Y, (int)Math.round(IMAGE_SIZE*zoom), (int)Math.round(IMAGE_SIZE*zoom), null);
 		}
 
 	}
@@ -58,7 +58,7 @@ public class Member {
 		for (int j = 0; j < Parents.size(); j++) {
 			temp.add(Parents.get(i).countAncestors(0));
 		}
-		int greatest = Integer.MIN_VALUE;
+		int greatest = 0;
 		for (int j = 0; j < temp.size() ; j++) {
 			if(temp.get(i)>greatest){
 				greatest = temp.get(i);
@@ -70,36 +70,40 @@ public class Member {
 
 	public int relations(int score, int jumps, int maxJumps) {
 		if(jumps>maxJumps){
-			return -1;
+			return score;
 		}
-		int parMax = Integer.MIN_VALUE;
+		int parMax = score;
 		for (int i = 0; i < Parents.size(); i++) {
 			int a;
-			if((a=Parents.get(i).relations(score+1, jumps+1, maxJumps))>parMax){
+			a=Parents.get(i).relations(score+1, jumps+1, maxJumps);
+			if(a>parMax){
 				parMax = a;
 			}
 		}
-		int marMax = Integer.MIN_VALUE;
+		int marMax = score;
 		for (int i = 0; i < Married.size(); i++) {
-			int a;
-			if((a=Married.get(i).relations(score, jumps+1, maxJumps))>marMax){
+			int a=Married.get(i).relations(score, jumps+1, maxJumps);
+			if(a>marMax){
 				marMax = a;
 			}
 		}
-		int chilMax = Integer.MIN_VALUE;
+		int chilMax = score;
+		
 		for (int i = 0; i < Children.size(); i++) {
-			int a;
-			if((a=Children.get(i).relations(score-1, jumps+1, maxJumps))>chilMax){
+			int a=Children.get(i).relations(score-1, jumps+1, maxJumps);
+			if(a>chilMax){
 				chilMax = a;
 			}
 		}
-		if(parMax>=marMax&&parMax>chilMax){
-			return parMax;
+		int ret = 0;
+		if(parMax>=marMax&&parMax>=chilMax){
+			ret= parMax;
 		}else if(marMax>=parMax&&marMax>=chilMax){
-			return marMax;
+			ret =marMax;
 		}else{
-			return chilMax;
+			ret =chilMax;
 		}
+		return ret;
 	}
 
 }

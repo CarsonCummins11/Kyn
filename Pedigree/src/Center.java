@@ -11,6 +11,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -22,10 +24,11 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-public class Center implements MouseListener, ActionListener, MouseMotionListener {
+public class Center implements MouseListener, ActionListener, MouseMotionListener, MouseWheelListener {
 	JFrame f = new JFrame();
 	ArrayList<Member> Members = new ArrayList<Member>();
 	Member m = null;
+
 	JButton addMem = new JButton();
 	Container menu = new Container();
 	Surface s = new Surface();
@@ -35,9 +38,10 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	Point PP;
 	JButton startCalc = new JButton();
 	Member[] parents = new Member[2];
-public static final String DATA_OUTPUT_FILE = "data.txt"; 
+	public static final String DATA_OUTPUT_FILE = "Ancestors.txt";
+
 	public Center() {
-		
+		f.addMouseWheelListener(this);
 		s.addMouseListener(this);
 		s.addMouseMotionListener(this);
 		f.setVisible(true);
@@ -52,7 +56,7 @@ public static final String DATA_OUTPUT_FILE = "data.txt";
 		addMem.setMargin(new Insets(0, 0, 0, 0));
 		addMem.setBorder(null);
 		addMem.setBackground(null);
-		startCalc.setMargin(new Insets(0,0,0,0));
+		startCalc.setMargin(new Insets(0, 0, 0, 0));
 		startCalc.setBorder(null);
 		startCalc.setBorder(null);
 		startCalc.addActionListener(this);
@@ -60,7 +64,7 @@ public static final String DATA_OUTPUT_FILE = "data.txt";
 		try {
 			Image img1 = ImageIO.read(new File("addMember.png"));
 			addMem.setIcon(new ImageIcon(img1));
-			Image img2= ImageIO.read(new File("startCalculation.png"));
+			Image img2 = ImageIO.read(new File("startCalculation.png"));
 			startCalc.setIcon(new ImageIcon(img2));
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -79,11 +83,12 @@ public static final String DATA_OUTPUT_FILE = "data.txt";
 	}
 
 	public Member getClicked(int x, int y) {
-	
+
 		for (int i = 0; i < Members.size(); i++) {
 			int XX = s.members.get(i).X;
 			int YY = s.members.get(i).Y;
-			if ((x > XX && x < XX + Member.IMAGE_SIZE) && (y > YY && y < YY + Member.IMAGE_SIZE)) {
+			if ((x > XX && x < XX + (int) Math.round(s.zoom * Member.IMAGE_SIZE))
+					&& (y > YY && y < YY + (int) Math.round(s.zoom * Member.IMAGE_SIZE))) {
 				return Members.get(i);
 			}
 		}
@@ -102,114 +107,114 @@ public static final String DATA_OUTPUT_FILE = "data.txt";
 	public void mousePressed(MouseEvent e) {
 		int x = e.getX();
 		int y = e.getY();
-		if(e.getClickCount()<2){
-		if (e.getButton() == MouseEvent.BUTTON1 && movable) {
-			
-			if (m == null) {
-				m = getClicked(x, y);
+		if (e.getClickCount() < 2) {
+			if (e.getButton() == MouseEvent.BUTTON1 && movable) {
 
-			} else {
-				m = null;
-			}
-			// If you press the middle button
-		} else if (e.getButton() == MouseEvent.BUTTON3 && movable) {
-			m = getClicked(x, y);
-			if (m != null) {
-				movable = false;
-				showing = new Menu(x, y, m);
-				s.menu = showing;
-				f.repaint();
-			} else {
-				if (isNode(x, y)) {
-					s.relmenu = new RelationMenu(x, y, s.Relations.get(findIndexOfMidpoint(s.lines,x,y)));
-					movable = false;
-					PP = new Point(x,y);
-					f.repaint();
-			
-				}
-			}
-		} else if (e.getButton() == MouseEvent.BUTTON1 && !movable) {
-			if (s.relmenu == null) {
-				int clicked = getClickedOption(x, y);
-				if (clicked == 5) {
-					s.menu = null;
-					f.repaint();
-					movable = true;
-					m = null;
-					return;
+				if (m == null) {
+					m = getClicked(x, y);
+
 				} else {
-				
+					m = null;
+				}
+				// If you press the middle button
+			} else if (e.getButton() == MouseEvent.BUTTON3 && movable) {
+				m = getClicked(x, y);
+				if (m != null) {
+					movable = false;
+					showing = new Menu(x, y, m);
+					s.menu = showing;
+					f.repaint();
+				} else {
+					if (isNode(x, y)) {
+						s.relmenu = new RelationMenu(x, y, s.Relations.get(findIndexOfMidpoint(s.lines, x, y)));
+						movable = false;
+						PP = new Point(x, y);
+						f.repaint();
+
+					}
+				}
+			} else if (e.getButton() == MouseEvent.BUTTON1 && !movable) {
+				if (s.relmenu == null) {
+					int clicked = getClickedOption(x, y);
+					if (clicked == 5) {
+						s.menu = null;
+						f.repaint();
+						movable = true;
+						m = null;
+						return;
+					} else {
+
+						switch (clicked) {
+						case 1:
+							m.Gender = Member.MALE;
+							break;
+						case 2:
+							m.Gender = Member.FEMALE;
+							break;
+						case 3:
+
+							m.Carrier = true;
+							break;
+						case 4:
+
+							m.Carrier = false;
+							break;
+						default:
+							// nothing
+						}
+						s.menu.linked = m;
+
+						f.repaint();
+
+					}
+				} else {
+					int clicked = getClickedRel(x, y);
 					switch (clicked) {
 					case 1:
-						m.Gender = Member.MALE;
+						s.relmenu.Status = RelationMenu.MARRIED;
 						break;
 					case 2:
-						m.Gender = Member.FEMALE;
+						s.relmenu.Status = RelationMenu.DESCENDANT;
 						break;
 					case 3:
-				
-						m.Carrier = true;
+						s.relmenu = null;
+						movable = true;
+						f.repaint();
+						PP = new Point();
 						break;
-					case 4:
-					
-						m.Carrier = false;
-						break;
-					default:
-						// nothing
 					}
-					s.menu.linked = m;
+					if (clicked != 3) {
+						s.Relations.set(findIndexOfMidpoint(s.lines, PP.x, PP.y), s.relmenu.Status);
+						f.repaint();
 
-					f.repaint();
+					}
+				}
+				// If there you click on the second button, the middle button
+			} else if (e.getButton() == MouseEvent.BUTTON2) {
+				// If the click is on an object
+				if (getClicked(x, y) != null) {
+					if (strt != null) {
+						Member[] temp = { getClicked(x, y), strt };
+						s.lines.add(temp);
+						s.Relations.add(RelationMenu.MARRIED);
+						f.repaint();
+						strt = null;
+					} else {
+						strt = getClicked(x, y);
+					}
+				}
 
-				}
-			} else {
-				int clicked = getClickedRel(x, y);
-				switch (clicked) {
-				case 1:
-					s.relmenu.Status = RelationMenu.MARRIED;
-					break;
-				case 2:
-					s.relmenu.Status = RelationMenu.DESCENDANT;
-					break;
-				case 3:
-					s.relmenu = null;
-					movable = true;
-					f.repaint();
-					PP = new Point();
-					break;
-				}
-				if (clicked != 3) {
-					s.Relations.set(findIndexOfMidpoint(s.lines, PP.x, PP.y), s.relmenu.Status);
-					f.repaint();
-					
-				}
 			}
-			// If there you click on the second button, the middle button
-		} else if (e.getButton() == MouseEvent.BUTTON2) {
-			// If the click is on an object
-			if (getClicked(x, y) != null) {
-				if (strt != null) {
-					Member[] temp = { getClicked(x, y), strt };
-					s.lines.add(temp);
-					s.Relations.add(RelationMenu.MARRIED);
-					// Redraw the frame
-					f.repaint();
-					strt = null;
-				} else {
-					strt = getClicked(x, y);
-				}
-			}
-
-		}
-		}else{
-			if(e.getButton()==MouseEvent.BUTTON1){
-				if(getClicked(x, y)!=null&&(!getClicked(x,y).equals(parents[0]))&&(!getClicked(x,y).equals(parents[1]))){
-					if(parents[0]==null){
-						parents[0]=getClicked(x,y);
-					}else if(parents[1]==null){
-						parents[1]=getClicked(x,y);
-					}else{
-						parents[(int)Math.round(Math.random())]=getClicked(x,y);
+		} else {
+			if (e.getButton() == MouseEvent.BUTTON1) {
+				if (getClicked(x, y) != null && (!getClicked(x, y).equals(parents[0]))
+						&& (!getClicked(x, y).equals(parents[1]))) {
+					if (parents[0] == null) {
+						parents[0] = getClicked(x, y);
+					} else if (parents[1] == null) {
+						parents[1] = getClicked(x, y);
+					} else {
+						parents[(int) Math.round(Math.random())] = getClicked(x, y);
 					}
 					s.Parents[0] = parents[0];
 					s.Parents[1] = parents[1];
@@ -220,11 +225,13 @@ public static final String DATA_OUTPUT_FILE = "data.txt";
 	}
 
 	public int findIndexOfMidpoint(ArrayList<Member[]> lines, int x, int y) {
-		System.out.println(x+","+y);
+
 		for (int i = 0; i < lines.size(); i++) {
-			Point pp = getMidpoint(lines.get(i)[0].X+Member.IMAGE_SIZE/2, lines.get(i)[0].Y+Member.IMAGE_SIZE/2, lines.get(i)[1].X+Member.IMAGE_SIZE/2, lines.get(i)[1].Y+Member.IMAGE_SIZE/2);
-			System.out.println(pp.x+","+pp.y);
-			if (pp.distance(new Point(x,y)) < Surface.CIRCLE_DIAMETER) {
+			Point pp = getMidpoint(lines.get(i)[0].X + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2),
+					lines.get(i)[0].Y + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2),
+					lines.get(i)[1].X + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2),
+					lines.get(i)[1].Y + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2));
+			if (pp.distance(new Point(x, y)) < s.zoom * Surface.CIRCLE_DIAMETER) {
 				return i;
 			}
 		}
@@ -255,14 +262,15 @@ public static final String DATA_OUTPUT_FILE = "data.txt";
 	public boolean isNode(int x, int y) {
 		for (int i = 0; i < s.lines.size(); i++) {
 			Point p = getMidpoint(s.lines.get(i)[0].X + Member.IMAGE_SIZE / 2,
-					s.lines.get(i)[0].Y + Member.IMAGE_SIZE / 2, s.lines.get(i)[1].X + Member.IMAGE_SIZE / 2,
-					s.lines.get(i)[1].Y + Member.IMAGE_SIZE / 2);
-			
-			if (Point.distance(p.x, p.y, x, y) < Surface.CIRCLE_DIAMETER) {
+					s.lines.get(i)[0].Y + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2),
+					s.lines.get(i)[1].X + Member.IMAGE_SIZE / 2,
+					s.lines.get(i)[1].Y + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2));
+
+			if (Point.distance(p.x, p.y, x, y) < (int) Math.round(s.zoom * Surface.CIRCLE_DIAMETER)) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -294,25 +302,26 @@ public static final String DATA_OUTPUT_FILE = "data.txt";
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource().equals(addMem)){
-		Member mem = new Member(Member.MALE, false, 0, 0);
-		s.members.add(mem);
-		Members.add(mem);
-		f.repaint();
-		}else{
+		if (e.getSource().equals(addMem)) {
+			Member mem = new Member(Member.MALE, false, 70, 0);
+			s.members.add(mem);
+			Members.add(mem);
+			f.repaint();
+		} else {
 			String familyTree = buildStringFromTree();
-			if (familyTree!=null){
-			try {
-				PrintWriter write = new PrintWriter(DATA_OUTPUT_FILE);
-				write.print(familyTree);
-				write.close();
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
+			System.out.println(familyTree);
+			if (familyTree != null) {
+				try {
+					PrintWriter write = new PrintWriter(DATA_OUTPUT_FILE);
+					write.print(familyTree);
+					write.close();
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
+
+			} else {
+				return;
 			}
-			
-		}else{
-			return;
-		}
 		}
 
 	}
@@ -320,70 +329,88 @@ public static final String DATA_OUTPUT_FILE = "data.txt";
 	public String buildStringFromTree() {
 		String ret = "";
 		for (int i = 0; i < s.lines.size(); i++) {
-			if(s.Relations.get(i)==RelationMenu.MARRIED){
-				if(!s.lines.get(i)[0].Married.contains(s.lines.get(i)[1])){
+			if (s.Relations.get(i) == RelationMenu.MARRIED) {
+				if (!s.lines.get(i)[0].Married.contains(s.lines.get(i)[1])) {
 					s.lines.get(i)[0].Married.add(s.lines.get(i)[1]);
 				}
-				if(!s.lines.get(i)[1].Married.contains(s.lines.get(i)[0])){
+				if (!s.lines.get(i)[1].Married.contains(s.lines.get(i)[0])) {
 					s.lines.get(i)[1].Married.add(s.lines.get(i)[0]);
 				}
-			}else{
+			} else {
 				Member P1 = s.lines.get(i)[0];
 				Member P2 = s.lines.get(i)[1];
-				if(P1.Y>P2.Y&&!P1.Parents.contains(P2)&&!P2.Children.contains(P1)){
+				if (P1.Y > P2.Y && !P1.Parents.contains(P2) && !P2.Children.contains(P1)) {
 					P1.Parents.add(P2);
 					P2.Children.add(P1);
-				}else if (P2.Y>P1.Y&&P2.Parents.contains(P1)&&!P1.Children.contains(P2)){
+				} else if (P2.Y > P1.Y && P2.Parents.contains(P1) && !P1.Children.contains(P2)) {
 					P2.Parents.add(P1);
 					P1.Children.add(P2);
 				}
 			}
 		}
+		setColumns();
 		for (int i = 0; i < s.members.size(); i++) {
-			ret+=s.members.get(i).Carrier?"true\n":"false\n";
-			if(s.Parents[0]==null||s.Parents[1]==null){
+			ret += s.members.get(i).Carrier ? "true\r\n" : "false\r\n";
+			if (s.Parents[0] == null || s.Parents[1] == null) {
 				JOptionPane.showMessageDialog(f, "Please select two parents by double clicking");
 				return null;
 			}
-			if(s.Parents[0].equals(s.members.get(i))||s.Parents[1].equals(s.members.get(i))){
-				ret+="true\n";
-			}else{
-				ret+="false\n";
+			if (s.Parents[0].equals(s.members.get(i)) || s.Parents[1].equals(s.members.get(i))) {
+				ret += "true\r\n";
+			} else {
+				ret += "false\r\n";
 			}
-			ret+=getRow(s.members.get(i))+"\n";
-			ret+=getColumn(s.members.get(i))+"\n";
+			ret += getRow(s.members.get(i)) + "\r\n";
+			ret += s.members.get(i).column + "\r\n";
 			for (int j = 0; j < s.members.get(i).Parents.size(); j++) {
-				ret+=getRow(s.members.get(i).Parents.get(i));
-				ret+=getColumn(s.members.get(i).Parents.get(i));
+				ret += getRow(s.members.get(i).Parents.get(j))+"\r\n";
+				ret += s.members.get(i).Parents.get(j).column+"\r\n";
 			}
-			for (int j = 0; j < s.members.get(i).Married.size(); j++) {
-				ret+=getRow(s.members.get(i).Married.get(i));
-				ret+=getColumn(s.members.get(i).Married.get(i));
+			if(s.members.get(i).Parents.size()<1){
+				ret+="-1\r\n-1\r\n-1\r\n-1\r\n";
 			}
 			
+
 		}
 		return ret;
 	}
 
-	private String getRow(Member mm) {
-		
-		return Integer.toString(mm.relations(0,0,s.members.size()*2));
+	public String getRow(Member mm) {
+		int ret = mm.relations(0, 0, s.members.size());
+		return Integer.toString(ret);
 	}
 
-	
-
-	private String getColumn(Member member) {
-		int a;
-		ArrayList<Integer> usedCols =new ArrayList<Integer>();
+	public void setColumns() {
+		ArrayList<ArrayList<Member>> generations = new ArrayList<ArrayList<Member>>();
+		int totalGenerations =getYoungest(s.members).countAncestors(0);
+		System.out.println(totalGenerations);
+		for (int i = 0; i <totalGenerations; i++) {
+			generations.add(new ArrayList<Member>());
+		}
 		for (int i = 0; i < s.members.size(); i++) {
-			if(s.members.get(i).column!=-1){
-				usedCols.add(s.members.get(i).column);
+			int b = s.members.get(i).relations(0, 0, s.members.size() );
+			generations.get(b).add(s.members.get(i));
+		}
+		for (int i = 0; i < generations.size(); i++) {
+			for (int j = 0; j < generations.get(i).size(); j++) {
+				generations.get(i).get(j).column = j;
+			}
+
+		}
+
+	}
+
+	private Member getYoungest(ArrayList<Member> mm) {
+		Member ret = null;
+		int greatestGen = Integer.MIN_VALUE;
+		for (int i = 0; i < mm.size(); i++) {
+			int a;
+			if (greatestGen < (a = mm.get(i).countAncestors(0))) {
+				greatestGen = a;
+				ret = mm.get(i);
 			}
 		}
-		while(!usedCols.contains((a=(int)Math.round(s.members.size()*Math.random())))){
-		//nothing	
-		}
-		return Integer.toString(a);
+		return ret;
 	}
 
 	@Override
@@ -394,13 +421,49 @@ public static final String DATA_OUTPUT_FILE = "data.txt";
 	@Override
 	public void mouseMoved(MouseEvent e) {
 		if (m != null && movable) {
-			m.X = e.getX() - Member.IMAGE_SIZE / 2;
-			m.Y = e.getY() - Member.IMAGE_SIZE / 2;
+			m.X = e.getX() - (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2);
+			m.Y = e.getY() - (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2);
 			f.repaint();
 		}
 
 	}
 
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		int rolls = e.getWheelRotation();
+		int x = e.getX();
+		int y = e.getY();
+		double zoomPrevious = s.zoom;
+		double zoomSpeed = .05;
+		if (rolls > 0) {
+
+			// Rolled towards user
+			if ((s.zoom - zoomSpeed * rolls) >= .1) {
+				s.zoom -= zoomSpeed * rolls;
+			} else {
+				
+				s.zoom = .1;
+			}
+		} else if (rolls < 0) {
+			// Rolled Away
+			if ((s.zoom + zoomSpeed * rolls) <= 5) {
+				s.zoom -= zoomSpeed * rolls;
+			} else {
+				s.zoom = 5;
+			}
+			
+		}
+		if(zoomPrevious!=s.zoom){
+		for (int i = 0; i < s.members.size(); i++) {
+			Member m = s.members.get(i);
+			m.X+=(int)Math.round((-rolls*zoomSpeed)*((m.X+(int)Math.round(s.zoom*Member.IMAGE_SIZE/2))-s.getWidth()/2));
+			m.Y+=(int)Math.round((-rolls*zoomSpeed)*((m.Y+(int)Math.round(s.zoom*Member.IMAGE_SIZE/2))-s.getHeight()/2));
+		}
+		}
+	
+		f.repaint();
+
 	
 
+	}
 }
