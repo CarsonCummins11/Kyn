@@ -23,8 +23,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 
 public class Center implements MouseListener, ActionListener, MouseMotionListener, MouseWheelListener {
-	//Defines all the wide scoped variables in the class
-	JFrame f = new JFrame("Analyze");
+	// Defines all the wide scoped variables in the class
+	JFrame f = new JFrame("Tree Builder");
 	Member m = null;
 	JButton addMem = new JButton();
 	Container menu = new Container();
@@ -38,8 +38,9 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	Member[] parents = new Member[2];
 	JTextField searchBar = new JTextField("Search for Traits");
 	public static final String DATA_OUTPUT_FILE = "Ancestors.txt";
+
 	public Center() {
-		//setting up the frame/general GUI
+		// setting up the frame/general GUI
 		f.addMouseWheelListener(this);
 		s.addMouseListener(this);
 		s.addMouseMotionListener(this);
@@ -75,8 +76,9 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		addMem.addActionListener(this);
 
 	}
+
 	public Center(ArrayList<Member> mems, ArrayList<Integer> rels, ArrayList<Member[]> lins) {
-		//setting up the frame/general GUI
+		// setting up the frame/general GUI
 		s.members = mems;
 		s.Relations = rels;
 		s.lines = lins;
@@ -113,19 +115,18 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		addMem.addActionListener(this);
 
 	}
-/*
-	public static void main(String[] args) {
-		new Center();
-
-	}
-	*/
+	/*
+	 * public static void main(String[] args) { new Center();
+	 * 
+	 * }
+	 */
 
 	public void mouseClicked(MouseEvent e) {
 
 	}
 
 	public Member getClicked(int x, int y) {
-//Gets the member at coordinates x,y, if none returns null
+		// Gets the member at coordinates x,y, if none returns null
 		for (int i = 0; i < s.members.size(); i++) {
 			int XX = s.members.get(i).X;
 			int YY = s.members.get(i).Y;
@@ -147,23 +148,24 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	}
 
 	public void mousePressed(MouseEvent e) {
-		//all the possible ways mouse could be pressed, also handles menu interaction
+		// all the possible ways mouse could be pressed, also handles menu
+		// interaction
 		int x = e.getX();
 		int y = e.getY();
 		if (e.getClickCount() < 2) {
-			//if left click and no menu
+			// if left click and no menu
 			if (e.getButton() == MouseEvent.BUTTON1 && movable) {
 				if (m == null) {
 					m = getClicked(x, y);
 
 				} else {
-					int delBoxX =(int) (s.getWidth()-Surface.DELETE_BOX.getWidth());
-					int delBoxY = (int) (s.getHeight()-Surface.DELETE_BOX.getHeight());
+					int delBoxX = (int) (s.getWidth() - Surface.DELETE_BOX.getWidth());
+					int delBoxY = (int) (s.getHeight() - Surface.DELETE_BOX.getHeight());
 					for (int i = 0; i < s.members.size(); i++) {
 						Member mm = s.members.get(i);
-						if(mm.X>delBoxX&&mm.X<s.getWidth()&&mm.Y>delBoxY&&mm.Y<s.getHeight()){
+						if (mm.X > delBoxX && mm.X < s.getWidth() && mm.Y > delBoxY && mm.Y < s.getHeight()) {
 							for (int j = 0; j < s.lines.size(); j++) {
-								if(s.lines.get(i)[0].equals(mm)||s.lines.get(i)[1].equals(mm)){
+								if (s.lines.get(i)[0].equals(mm) || s.lines.get(i)[1].equals(mm)) {
 									s.lines.remove(i);
 									s.Relations.remove(i);
 									s.lines.trimToSize();
@@ -171,7 +173,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 								}
 							}
 							s.members.remove(i);
-							
+
 						}
 					}
 					f.repaint();
@@ -187,7 +189,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 					f.repaint();
 				} else {
 					if (isNode(x, y)) {
-						//if a nod was clicked
+						// if a nod was clicked
 						s.relmenu = new RelationMenu(x, y, s.Relations.get(findIndexOfMidpoint(s.lines, x, y)));
 						movable = false;
 						PP = new Point(x, y);
@@ -195,9 +197,9 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 
 					}
 				}
-				//if left click and menu is popped up
+				// if left click and menu is popped up
 			} else if (e.getButton() == MouseEvent.BUTTON1 && !movable) {
-				//menu about a member is popped up
+				// menu about a member is popped up
 				if (s.relmenu == null) {
 					int clicked = getClickedOption(x, y);
 					if (clicked == 5) {
@@ -232,7 +234,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 
 					}
 				} else {
-					//menu about relations is popped up
+					// menu about relations is popped up
 					int clicked = getClickedRel(x, y);
 					switch (clicked) {
 					case 1:
@@ -271,7 +273,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 
 			}
 		} else {
-			//make a line in between
+			// make a line in between
 			if (e.getButton() == MouseEvent.BUTTON1) {
 				if (getClicked(x, y) != null && (!getClicked(x, y).equals(parents[0]))
 						&& (!getClicked(x, y).equals(parents[1]))) {
@@ -378,22 +380,16 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 					PrintWriter write = new PrintWriter(DATA_OUTPUT_FILE);
 					write.print(familyTree);
 					write.close();
-					/*Process p;
-					try {
-						p = Runtime.getRuntime().exec("\"c:/program files/PedigreeAnalysis.exe\"");
-						try {
-							p.waitFor();
-							Scanner fScan = new Scanner(new File(DATA_OUTPUT_FILE));
-							String perc = fScan.nextLine();
-							searchBar.setText("The likelihood is " + perc);
-							fScan.close();
-						} catch (InterruptedException e1) {
-							e1.printStackTrace();
-						}
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-					*/
+					/*
+					 * Process p; try { p = Runtime.getRuntime().
+					 * exec("\"c:/program files/PedigreeAnalysis.exe\""); try {
+					 * p.waitFor(); Scanner fScan = new Scanner(new
+					 * File(DATA_OUTPUT_FILE)); String perc = fScan.nextLine();
+					 * searchBar.setText("The likelihood is " + perc);
+					 * fScan.close(); } catch (InterruptedException e1) {
+					 * e1.printStackTrace(); } } catch (IOException e1) {
+					 * e1.printStackTrace(); }
+					 */
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
 				}
@@ -408,54 +404,53 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 					searchBar.setText(str);
 				} else {
 					searchBar.setText("No record of trait, or it was spelled incorrectly");
-					f.setSize(f.getSize().width+1,f.getSize().height);
-					f.setSize(f.getSize().width-1,f.getSize().height);
+					f.setSize(f.getSize().width + 1, f.getSize().height);
+					f.setSize(f.getSize().width - 1, f.getSize().height);
 				}
 			} catch (FileNotFoundException e1) {
 
 				e1.printStackTrace();
 			}
-		}else if (e.getSource().equals(save)){
+		} else if (e.getSource().equals(save)) {
 			String name = JOptionPane.showInputDialog(f, "Input File Name", "ex. tree");
-			if(name!=null){
-			try {
-				PrintWriter write = new PrintWriter(new File(name+".txt"));
-				String output = buildStringFromTree();
-				write.print(output);
-			} catch (FileNotFoundException e1) {
-				
-				e1.printStackTrace();
+			if (name != null) {
+				try {
+					String output = buildStringFromTree();
+					System.out.println(output);
+					if (output != null) {
+						PrintWriter write = new PrintWriter(new File(name + ".txt"));
+						write.print(output);
+						write.close();
+					}
+				} catch (FileNotFoundException e1) {
+
+					e1.printStackTrace();
+				}
 			}
-			}
-			
-			
+
 		}
 
 	}
 
 	public String buildStringFromTree() {
-		if(s.members.size()<2||s.lines.size()<1){
-			JOptionPane.showMessageDialog(f,"Please add at least two members with at least one connection");
+		if (s.members.size() < 2 || s.lines.size() < 1) {
+			JOptionPane.showMessageDialog(f, "Please add at least two members with at least one connection");
 			return null;
 		}
 		String ret = "";
-		ret+=s.members.size()+"\r\n";
-		//ret+=getAllInts(searchBar.getText())+"\r\n";
+		ret += s.members.size() + "\r\n";
+		// ret+=getAllInts(searchBar.getText())+"\r\n";
 		for (int i = 0; i < s.lines.size(); i++) {
 			if (s.Relations.get(i) == RelationMenu.MARRIED) {
-				if (!s.lines.get(i)[0].Married.contains(s.lines.get(i)[1])) {
-					s.lines.get(i)[0].Married.add(s.lines.get(i)[1]);
-				}
-				if (!s.lines.get(i)[1].Married.contains(s.lines.get(i)[0])) {
-					s.lines.get(i)[1].Married.add(s.lines.get(i)[0]);
-				}
+				s.lines.get(i)[0].Married.add(s.lines.get(i)[1]);
+				s.lines.get(i)[1].Married.add(s.lines.get(i)[0]);
 			} else {
 				Member P1 = s.lines.get(i)[0];
 				Member P2 = s.lines.get(i)[1];
-				if (P1.Y > P2.Y && !P1.Parents.contains(P2) && !P2.Children.contains(P1)) {
+				if (P1.Y > P2.Y) {
 					P1.Parents.add(P2);
 					P2.Children.add(P1);
-				} else if (P2.Y > P1.Y && P2.Parents.contains(P1) && !P1.Children.contains(P2)) {
+				} else {
 					P2.Parents.add(P1);
 					P1.Children.add(P2);
 				}
@@ -473,8 +468,10 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			} else {
 				ret += "0\r\n";
 			}
-			if(s.members.get(i).Parents.size()>=2){
-				ret+="1\r\n";
+			if (s.members.get(i).Parents.size() >= 2) {
+				ret += "1\r\n";
+			} else {
+				ret += "0\r\n";
 			}
 			ret += getRow(s.members.get(i)) + "\r\n";
 			ret += s.members.get(i).column + "\r\n";
@@ -490,8 +487,8 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	private String getAllInts(String text) {
 		String ret = "";
 		for (int i = 0; i < text.length(); i++) {
-			if(Character.isDigit(text.charAt(i))){
-				ret+=text.charAt(i);
+			if (Character.isDigit(text.charAt(i))) {
+				ret += text.charAt(i);
 			}
 		}
 		return ret;
@@ -499,6 +496,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 
 	public String getRow(Member mm) {
 		int ret = mm.relations(0, 0, s.members.size());
+		System.out.println("gen" + ret);
 		return Integer.toString(ret);
 	}
 
@@ -557,41 +555,41 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		double moveSpeed = 7;
 		int xx = e.getX();
 		int yy = e.getY();
-		if(!e.isControlDown()&&!e.isShiftDown()){
-		if (rolls > 0) {
+		if (!e.isControlDown() && !e.isShiftDown()) {
+			if (rolls > 0) {
 
-			// Rolled towards user
-			if ((s.zoom - zoomSpeed * rolls) >= .5) {
-				s.zoom -= zoomSpeed * rolls;
-			} else {
+				// Rolled towards user
+				if ((s.zoom - zoomSpeed * rolls) >= .5) {
+					s.zoom -= zoomSpeed * rolls;
+				} else {
 
-				s.zoom = .5;
-			}
-		} else if (rolls < 0) {
-			// Rolled Away
-			if ((s.zoom + zoomSpeed * rolls) <= 5) {
-				s.zoom -= zoomSpeed * rolls;
-			} else {
-				s.zoom = 5;
-			}
+					s.zoom = .5;
+				}
+			} else if (rolls < 0) {
+				// Rolled Away
+				if ((s.zoom + zoomSpeed * rolls) <= 5) {
+					s.zoom -= zoomSpeed * rolls;
+				} else {
+					s.zoom = 5;
+				}
 
-		}
-		if (zoomPrevious != s.zoom) {
-			for (int i = 0; i < s.members.size(); i++) {
-				Member m = s.members.get(i);
-				m.X += (int) Math.round((-rolls * zoomSpeed)
-						* ((m.X + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2)) - xx));
-				m.Y += (int) Math.round((-rolls * zoomSpeed)
-						* ((m.Y + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2)) - yy));
 			}
-		}
-		}else if(e.isControlDown()){
-			for (int i = 0; i < s.members.size(); i++) {
-				s.members.get(i).X+=rolls*(Math.pow(s.zoom,2)*moveSpeed);
+			if (zoomPrevious != s.zoom) {
+				for (int i = 0; i < s.members.size(); i++) {
+					Member m = s.members.get(i);
+					m.X += (int) Math.round(
+							(-rolls * zoomSpeed) * ((m.X + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2)) - xx));
+					m.Y += (int) Math.round(
+							(-rolls * zoomSpeed) * ((m.Y + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2)) - yy));
+				}
 			}
-		}else if (e.isShiftDown()){
+		} else if (e.isControlDown()) {
 			for (int i = 0; i < s.members.size(); i++) {
-				s.members.get(i).Y+=rolls*(Math.pow(s.zoom,2)*moveSpeed);
+				s.members.get(i).X += rolls * (Math.pow(s.zoom, 2) * moveSpeed);
+			}
+		} else if (e.isShiftDown()) {
+			for (int i = 0; i < s.members.size(); i++) {
+				s.members.get(i).Y += rolls * (Math.pow(s.zoom, 2) * moveSpeed);
 			}
 		}
 		f.repaint();

@@ -59,6 +59,7 @@ public class Surface extends JPanel {
 			}
 		
 		}
+		g.setColor(Color.black);
 		g.fillRect(delBoxX, delBoxY, (int)DELETE_BOX.getWidth(), (int)DELETE_BOX.getHeight());
 		g2.setStroke(new BasicStroke(8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL, 0));
 		g2.setColor(Color.red);

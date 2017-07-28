@@ -56,7 +56,7 @@ JLabel header = new JLabel("<html><span style='font-size:50px'>"+"Pedigree"+"</s
 				try {
 					Scanner fRead = new Scanner(ff);
 					while(fRead.hasNextLine()){
-						data+=fRead.nextLine();
+						data+=fRead.nextLine()+"\n";
 					}
 					fRead.close();
 				} catch (FileNotFoundException e1) {
@@ -75,11 +75,9 @@ JLabel header = new JLabel("<html><span style='font-size:50px'>"+"Pedigree"+"</s
 		
 	}
 	public boolean isLegalFormat(String data) {
-		if(Math.round((double)(data.length()-1)/9.0)!=(double)(data.length()-1)/9.0 ){
-			return false;
-		}
 		ArrayList<String> lines = new ArrayList<String>();
 		ArrayList<ArrayList<String>> memStrings = new ArrayList<ArrayList<String>>();
+		memStrings.add(new ArrayList<String>());
 		String curLine = "";
 		for (int i = 0; i < data.length(); i++) {
 			if(data.charAt(i)!='\n'){
@@ -90,8 +88,16 @@ JLabel header = new JLabel("<html><span style='font-size:50px'>"+"Pedigree"+"</s
 			}
 		}
 		lines.remove(0);
+		int prevlineNum = 0;
+		int numJumps=9;
 		for (int i = 0; i <lines.size(); i++) {
-		if(Math.round((double)i/9.0)==(double)i/9.0){
+		if(i-prevlineNum==2){
+			if (!(Integer.parseInt(lines.get(i))==0||Integer.parseInt(lines.get(i))==1)){
+			return false;
+			}
+			numJumps=Integer.parseInt(lines.get(i))==0?5:9;
+		}
+			if(i-prevlineNum==numJumps){
 			memStrings.get(memStrings.size()-1).add(lines.get(i));
 			memStrings.add(new ArrayList<String>());
 		}else{
@@ -99,10 +105,11 @@ JLabel header = new JLabel("<html><span style='font-size:50px'>"+"Pedigree"+"</s
 		}
 		}
 		for (int i = 0; i < memStrings.size(); i++) {
-			int[] vals = new int[9];
+			int[] vals = new int[memStrings.get(i).size()];
 			for (int j = 0; j < memStrings.get(i).size(); j++) {
 				if(isInteger(memStrings.get(i).get(j))){
 				vals[j] = Integer.parseInt(memStrings.get(i).get(j));
+				System.out.println(vals[j]);
 				}else{
 					return false;
 				}
@@ -110,11 +117,9 @@ JLabel header = new JLabel("<html><span style='font-size:50px'>"+"Pedigree"+"</s
 			if((vals[0]==1||vals[0]==0)&&
 			(vals[1]==1||vals[1]==0)&&
 			(vals[2]==1||vals[2]==0)&&
-			(vals[3]>0)&&(vals[4]>0)&&
-			(vals[6]>0)&&(vals[5]>0)&&
-			(vals[7]>0)&&(vals[8]>0)){
+			(vals[3]>=0)&&(vals[4]>=0)){
 				
-				//you're good
+				//you're almost definitely good
 			}else{
 				return false;
 			}
@@ -169,6 +174,7 @@ JLabel header = new JLabel("<html><span style='font-size:50px'>"+"Pedigree"+"</s
 		ArrayList<Member> ret = new ArrayList<Member>();
 		ArrayList<String> lines = new ArrayList<String>();
 		ArrayList<ArrayList<String>> memStrings = new ArrayList<ArrayList<String>>();
+		memStrings.add(new ArrayList<String>());
 		String curLine = "";
 		for (int i = 0; i < data.length(); i++) {
 			if(data.charAt(i)!='\n'){
@@ -179,8 +185,13 @@ JLabel header = new JLabel("<html><span style='font-size:50px'>"+"Pedigree"+"</s
 			}
 		}
 		lines.remove(0);
+		int prevlineNum = 0;
+		int numJumps=9;
 		for (int i = 0; i <lines.size(); i++) {
-		if(Math.round((double)i/9.0)==(double)i/9.0){
+			if(i-prevlineNum==2){
+				numJumps=Integer.parseInt(lines.get(i))==0?5:9;
+			}
+				if(i-prevlineNum==numJumps){
 			memStrings.get(memStrings.size()-1).add(lines.get(i));
 			memStrings.add(new ArrayList<String>());
 		}else{
@@ -195,6 +206,7 @@ JLabel header = new JLabel("<html><span style='font-size:50px'>"+"Pedigree"+"</s
 			ret.add(toAdd);
 		}
 		for (int i = 0; i < ret.size(); i++) {
+			if(memStrings.get(i).size()>5){
 			int p1Row = Integer.parseInt(memStrings.get(i).get(5));
 			int p1Col = Integer.parseInt(memStrings.get(i).get(6));
 			int p2Row = Integer.parseInt(memStrings.get(i).get(7));
@@ -207,6 +219,7 @@ JLabel header = new JLabel("<html><span style='font-size:50px'>"+"Pedigree"+"</s
 			temp.remove(ret.get(i).Parents.get(j));
 			ret.get(i).Parents.get(j).Married.addAll(temp);
 		}
+			}
 		ret.get(i).X = (int) (ret.get(i).column*Toolkit.getDefaultToolkit().getScreenSize().getWidth()/inMyGen(ret,ret.get(i).row));
 		ret.get(i).Y = (int)((int)ret.get(i).row*Toolkit.getDefaultToolkit().getScreenSize().getWidth()/totalGens(ret));
 		}
