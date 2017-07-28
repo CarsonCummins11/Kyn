@@ -10,13 +10,16 @@ class ancestors // manager class
 {
 
 public:
-    int trait_type; // i.e: recessive / dominant allele
+    //int trait_type; // i.e: recessive / dominant allele
+    bool is_carrier = false; // if true, the person is a carrier of the disease or trait in question
+    bool is_parent = false; // if true, the person is the parent of the child in question
+    bool has_parents = false;
     int generation; // based off offspring, not age
     int child_number; // If two people had a child, their child number is the same
     int parent1_child_number; // child number of first parent
+    int parent1_generation; // generation of first parent
     int parent2_child_number; // child number of second parent
-    bool is_carrier = false; // if true, the person is a carrier of the disease or trait in question
-    bool is_parent = false; // if true, the person is the parent of the child in question
+    int parent2_generation; // generation of second parent
 
     // first vector stores other vectors of type integer equal to the number of ancestors.
     //Each vector of type <int> stores all of the data for one ancestor

@@ -36,41 +36,35 @@ void ancestors::load_tree(){
 
 void ancestors::read_ancestry(ifstream & ancestry, vector<int>  & anAncestor)
 {
-    ancestry >> trait_type;
-    anAncestor.push_back(trait_type);
-//	ancestry.ignore(1000, '\n');
+    /*ancestry >> trait_type;
+    anAncestor.push_back(trait_type);*/
 
 	ancestry >> is_carrier;
-//	if (is_carrier != 0)
-//        is_carrier = true;
 	anAncestor.push_back(is_carrier);
-//	ancestry.ignore(1000, '\n');
 
 	ancestry >> is_parent;
-//	if (is_parent != 0)
-//        is_parent = true;
 	anAncestor.push_back(is_parent);
-//	ancestry.ignore(1000, '\n');
+
+	ancestry >> has_parents;
+	anAncestor.push_back(has_parents);
 
 	ancestry >> generation;
 	anAncestor.push_back(generation);
-//	ancestry.ignore(1000, '\n');
 
 	ancestry >> child_number;
 	anAncestor.push_back(child_number);
-//	ancestry.ignore(1000, '\n');
 
 	ancestry >> parent1_child_number;
 	anAncestor.push_back(parent1_child_number);
-//	ancestry.ignore(1000, '\n');
+
+	ancestry >> parent1_generation;
+	anAncestor.push_back(parent1_generation);
 
 	ancestry >> parent2_child_number;
 	anAncestor.push_back(parent2_child_number);
-//	ancestry.ignore(1000, '\n');
 
-	for(int i=0;i<anAncestor.size();++i)
-        cout << anAncestor[i];
-    cout << endl;
+	ancestry >> parent2_generation;
+	anAncestor.push_back(parent2_generation);
 }
 
 
@@ -80,8 +74,9 @@ void ancestors::display_tree(){
     {
         for (int jj = 0; jj < family_tree[ii].size(); ++jj)
         {
-            cout << family_tree[ii][jj] << endl;
+            cout << family_tree[ii][jj];
         }
+        cout << endl;
     }
 }
 
