@@ -1,10 +1,10 @@
 255 <- Number of people in pedigree
-0 <- Boolean: Indicates whether or not the person is a carrier. (0 = false / 1 = true)
-1 <- Boolean: Indicates whether or not the person is a parent of the offspring in question. (0 = false / 1 = true)
-1 <- Boolean: Determines whether or not the person has parents. (0 = false / 1 = true)
-3 <- it's own generation
-6 <- it's own child number
-3 <- it's first parent's child number (if no parent there will be nothing)
-2 <- it's first parent's generation ((if no parent there will be nothing)
-7 <- it's second parent's child number (if no parent there will be nothing)
-2 <- it's second parent's generation ((if no parent there will be nothing)
+0 <- Boolean: (is_carrier) Indicates whether or not the person is a carrier. (0 = false / 1 = true)
+1 <- Boolean: (is_parent) Indicates whether or not the person is a parent of the offspring in question. (0 = false / 1 = true)
+1 <- Boolean: (has_parents) Determines whether or not the person has parents. (0 = false / 1 = true)
+3 <- (generation) it's own generation
+6 <- (child_number) it's own child number
+3 <- (parent1_child_number) it's first parent's child number (if no parent there will be nothing)
+2 <- (parent1_generation) it's first parent's generation ((if no parent there will be nothing)
+7 <- (parent2_child_number) it's second parent's child number (if no parent there will be nothing)
+2 <- (parent2_generation) it's second parent's generation ((if no parent there will be nothing)
