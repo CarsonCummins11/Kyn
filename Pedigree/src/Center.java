@@ -6,8 +6,6 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -22,13 +20,12 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class Center implements MouseListener, ActionListener, MouseMotionListener, MouseWheelListener {
-	JFrame f = new JFrame();
-	ArrayList<Member> Members = new ArrayList<Member>();
+	//Defines all the wide scoped variables in the class
+	JFrame f = new JFrame("Analyze");
 	Member m = null;
-
 	JButton addMem = new JButton();
 	Container menu = new Container();
 	Surface s = new Surface();
@@ -36,20 +33,26 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	Menu showing;
 	Member strt = null;
 	Point PP;
+	JButton save = new JButton("Save");
 	JButton startCalc = new JButton();
 	Member[] parents = new Member[2];
+	JTextField searchBar = new JTextField("Search for Traits");
 	public static final String DATA_OUTPUT_FILE = "Ancestors.txt";
-
 	public Center() {
+		//setting up the frame/general GUI
 		f.addMouseWheelListener(this);
 		s.addMouseListener(this);
 		s.addMouseMotionListener(this);
 		f.setVisible(true);
-		menu.setLayout(new GridLayout(3, 1));
+		menu.setLayout(new GridLayout(4, 1));
+		menu.add(save);
+		save.addActionListener(this);
 		menu.add(addMem);
 		f.setSize(500, 500);
-		menu.add(new JPanel());
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		f.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		searchBar.addActionListener(this);
+		menu.add(searchBar);
+		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		f.setLayout(new BorderLayout());
 		f.add(s, BorderLayout.CENTER);
 		f.add(menu, BorderLayout.EAST);
@@ -72,24 +75,63 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		addMem.addActionListener(this);
 
 	}
+	public Center(ArrayList<Member> mems, ArrayList<Integer> rels, ArrayList<Member[]> lins) {
+		//setting up the frame/general GUI
+		s.members = mems;
+		s.Relations = rels;
+		s.lines = lins;
+		f.addMouseWheelListener(this);
+		s.addMouseListener(this);
+		s.addMouseMotionListener(this);
+		f.setVisible(true);
+		menu.setLayout(new GridLayout(3, 1));
+		menu.add(addMem);
+		f.setSize(500, 500);
+		f.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		searchBar.addActionListener(this);
+		menu.add(searchBar);
+		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		f.setLayout(new BorderLayout());
+		f.add(s, BorderLayout.CENTER);
+		f.add(menu, BorderLayout.EAST);
+		addMem.setMargin(new Insets(0, 0, 0, 0));
+		addMem.setBorder(null);
+		addMem.setBackground(null);
+		startCalc.setMargin(new Insets(0, 0, 0, 0));
+		startCalc.setBorder(null);
+		startCalc.setBorder(null);
+		startCalc.addActionListener(this);
+		menu.add(startCalc);
+		try {
+			Image img1 = ImageIO.read(new File("addMember.png"));
+			addMem.setIcon(new ImageIcon(img1));
+			Image img2 = ImageIO.read(new File("startCalculation.png"));
+			startCalc.setIcon(new ImageIcon(img2));
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		addMem.addActionListener(this);
 
+	}
+/*
 	public static void main(String[] args) {
 		new Center();
 
 	}
+	*/
 
 	public void mouseClicked(MouseEvent e) {
 
 	}
 
 	public Member getClicked(int x, int y) {
-
-		for (int i = 0; i < Members.size(); i++) {
+//Gets the member at coordinates x,y, if none returns null
+		for (int i = 0; i < s.members.size(); i++) {
 			int XX = s.members.get(i).X;
 			int YY = s.members.get(i).Y;
 			if ((x > XX && x < XX + (int) Math.round(s.zoom * Member.IMAGE_SIZE))
 					&& (y > YY && y < YY + (int) Math.round(s.zoom * Member.IMAGE_SIZE))) {
-				return Members.get(i);
+				return s.members.get(i);
 			}
 		}
 		return null;
@@ -105,18 +147,37 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	}
 
 	public void mousePressed(MouseEvent e) {
+		//all the possible ways mouse could be pressed, also handles menu interaction
 		int x = e.getX();
 		int y = e.getY();
 		if (e.getClickCount() < 2) {
+			//if left click and no menu
 			if (e.getButton() == MouseEvent.BUTTON1 && movable) {
-
 				if (m == null) {
 					m = getClicked(x, y);
 
 				} else {
+					int delBoxX =(int) (s.getWidth()-Surface.DELETE_BOX.getWidth());
+					int delBoxY = (int) (s.getHeight()-Surface.DELETE_BOX.getHeight());
+					for (int i = 0; i < s.members.size(); i++) {
+						Member mm = s.members.get(i);
+						if(mm.X>delBoxX&&mm.X<s.getWidth()&&mm.Y>delBoxY&&mm.Y<s.getHeight()){
+							for (int j = 0; j < s.lines.size(); j++) {
+								if(s.lines.get(i)[0].equals(mm)||s.lines.get(i)[1].equals(mm)){
+									s.lines.remove(i);
+									s.Relations.remove(i);
+									s.lines.trimToSize();
+									s.Relations.trimToSize();
+								}
+							}
+							s.members.remove(i);
+							
+						}
+					}
+					f.repaint();
 					m = null;
 				}
-				// If you press the middle button
+				// If you press the right button and no menu
 			} else if (e.getButton() == MouseEvent.BUTTON3 && movable) {
 				m = getClicked(x, y);
 				if (m != null) {
@@ -126,6 +187,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 					f.repaint();
 				} else {
 					if (isNode(x, y)) {
+						//if a nod was clicked
 						s.relmenu = new RelationMenu(x, y, s.Relations.get(findIndexOfMidpoint(s.lines, x, y)));
 						movable = false;
 						PP = new Point(x, y);
@@ -133,7 +195,9 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 
 					}
 				}
+				//if left click and menu is popped up
 			} else if (e.getButton() == MouseEvent.BUTTON1 && !movable) {
+				//menu about a member is popped up
 				if (s.relmenu == null) {
 					int clicked = getClickedOption(x, y);
 					if (clicked == 5) {
@@ -168,6 +232,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 
 					}
 				} else {
+					//menu about relations is popped up
 					int clicked = getClickedRel(x, y);
 					switch (clicked) {
 					case 1:
@@ -206,6 +271,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 
 			}
 		} else {
+			//make a line in between
 			if (e.getButton() == MouseEvent.BUTTON1) {
 				if (getClicked(x, y) != null && (!getClicked(x, y).equals(parents[0]))
 						&& (!getClicked(x, y).equals(parents[1]))) {
@@ -225,7 +291,6 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	}
 
 	public int findIndexOfMidpoint(ArrayList<Member[]> lines, int x, int y) {
-
 		for (int i = 0; i < lines.size(); i++) {
 			Point pp = getMidpoint(lines.get(i)[0].X + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2),
 					lines.get(i)[0].Y + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2),
@@ -305,16 +370,30 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		if (e.getSource().equals(addMem)) {
 			Member mem = new Member(Member.MALE, false, 70, 0);
 			s.members.add(mem);
-			Members.add(mem);
 			f.repaint();
-		} else {
+		} else if (e.getSource().equals(startCalc)) {
 			String familyTree = buildStringFromTree();
-			System.out.println(familyTree);
 			if (familyTree != null) {
 				try {
 					PrintWriter write = new PrintWriter(DATA_OUTPUT_FILE);
 					write.print(familyTree);
 					write.close();
+					/*Process p;
+					try {
+						p = Runtime.getRuntime().exec("\"c:/program files/PedigreeAnalysis.exe\"");
+						try {
+							p.waitFor();
+							Scanner fScan = new Scanner(new File(DATA_OUTPUT_FILE));
+							String perc = fScan.nextLine();
+							searchBar.setText("The likelihood is " + perc);
+							fScan.close();
+						} catch (InterruptedException e1) {
+							e1.printStackTrace();
+						}
+					} catch (IOException e1) {
+						e1.printStackTrace();
+					}
+					*/
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
 				}
@@ -322,12 +401,46 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			} else {
 				return;
 			}
+		} else if (e.getSource().equals(searchBar)) {
+			try {
+				String str = traitSearch.searchFile(traitSearch.TRAITS_FILE, searchBar.getText());
+				if (str != null) {
+					searchBar.setText(str);
+				} else {
+					searchBar.setText("No record of trait, or it was spelled incorrectly");
+					f.setSize(f.getSize().width+1,f.getSize().height);
+					f.setSize(f.getSize().width-1,f.getSize().height);
+				}
+			} catch (FileNotFoundException e1) {
+
+				e1.printStackTrace();
+			}
+		}else if (e.getSource().equals(save)){
+			String name = JOptionPane.showInputDialog(f, "Input File Name", "ex. tree");
+			if(name!=null){
+			try {
+				PrintWriter write = new PrintWriter(new File(name+".txt"));
+				String output = buildStringFromTree();
+				write.print(output);
+			} catch (FileNotFoundException e1) {
+				
+				e1.printStackTrace();
+			}
+			}
+			
+			
 		}
 
 	}
 
 	public String buildStringFromTree() {
+		if(s.members.size()<2||s.lines.size()<1){
+			JOptionPane.showMessageDialog(f,"Please add at least two members with at least one connection");
+			return null;
+		}
 		String ret = "";
+		ret+=s.members.size()+"\r\n";
+		//ret+=getAllInts(searchBar.getText())+"\r\n";
 		for (int i = 0; i < s.lines.size(); i++) {
 			if (s.Relations.get(i) == RelationMenu.MARRIED) {
 				if (!s.lines.get(i)[0].Married.contains(s.lines.get(i)[1])) {
@@ -350,27 +463,36 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		}
 		setColumns();
 		for (int i = 0; i < s.members.size(); i++) {
-			ret += s.members.get(i).Carrier ? "true\r\n" : "false\r\n";
+			ret += s.members.get(i).Carrier ? "1\r\n" : "0\r\n";
 			if (s.Parents[0] == null || s.Parents[1] == null) {
 				JOptionPane.showMessageDialog(f, "Please select two parents by double clicking");
 				return null;
 			}
 			if (s.Parents[0].equals(s.members.get(i)) || s.Parents[1].equals(s.members.get(i))) {
-				ret += "true\r\n";
+				ret += "1\r\n";
 			} else {
-				ret += "false\r\n";
+				ret += "0\r\n";
+			}
+			if(s.members.get(i).Parents.size()>=2){
+				ret+="1\r\n";
 			}
 			ret += getRow(s.members.get(i)) + "\r\n";
 			ret += s.members.get(i).column + "\r\n";
 			for (int j = 0; j < s.members.get(i).Parents.size(); j++) {
-				ret += getRow(s.members.get(i).Parents.get(j))+"\r\n";
-				ret += s.members.get(i).Parents.get(j).column+"\r\n";
+				ret += getRow(s.members.get(i).Parents.get(j)) + "\r\n";
+				ret += s.members.get(i).Parents.get(j).column + "\r\n";
 			}
-			if(s.members.get(i).Parents.size()<1){
-				ret+="-1\r\n-1\r\n-1\r\n-1\r\n";
-			}
-			
 
+		}
+		return ret;
+	}
+
+	private String getAllInts(String text) {
+		String ret = "";
+		for (int i = 0; i < text.length(); i++) {
+			if(Character.isDigit(text.charAt(i))){
+				ret+=text.charAt(i);
+			}
 		}
 		return ret;
 	}
@@ -382,13 +504,12 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 
 	public void setColumns() {
 		ArrayList<ArrayList<Member>> generations = new ArrayList<ArrayList<Member>>();
-		int totalGenerations =getYoungest(s.members).countAncestors(0);
-		System.out.println(totalGenerations);
-		for (int i = 0; i <totalGenerations; i++) {
+		int totalGenerations = getYoungest(s.members).countAncestors(0);
+		for (int i = 0; i < totalGenerations; i++) {
 			generations.add(new ArrayList<Member>());
 		}
 		for (int i = 0; i < s.members.size(); i++) {
-			int b = s.members.get(i).relations(0, 0, s.members.size() );
+			int b = s.members.get(i).relations(0, 0, s.members.size());
 			generations.get(b).add(s.members.get(i));
 		}
 		for (int i = 0; i < generations.size(); i++) {
@@ -431,18 +552,20 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
 		int rolls = e.getWheelRotation();
-		int x = e.getX();
-		int y = e.getY();
 		double zoomPrevious = s.zoom;
 		double zoomSpeed = .05;
+		double moveSpeed = 7;
+		int xx = e.getX();
+		int yy = e.getY();
+		if(!e.isControlDown()&&!e.isShiftDown()){
 		if (rolls > 0) {
 
 			// Rolled towards user
-			if ((s.zoom - zoomSpeed * rolls) >= .1) {
+			if ((s.zoom - zoomSpeed * rolls) >= .5) {
 				s.zoom -= zoomSpeed * rolls;
 			} else {
-				
-				s.zoom = .1;
+
+				s.zoom = .5;
 			}
 		} else if (rolls < 0) {
 			// Rolled Away
@@ -451,19 +574,27 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			} else {
 				s.zoom = 5;
 			}
-			
-		}
-		if(zoomPrevious!=s.zoom){
-		for (int i = 0; i < s.members.size(); i++) {
-			Member m = s.members.get(i);
-			m.X+=(int)Math.round((-rolls*zoomSpeed)*((m.X+(int)Math.round(s.zoom*Member.IMAGE_SIZE/2))-s.getWidth()/2));
-			m.Y+=(int)Math.round((-rolls*zoomSpeed)*((m.Y+(int)Math.round(s.zoom*Member.IMAGE_SIZE/2))-s.getHeight()/2));
-		}
-		}
-	
-		f.repaint();
 
-	
+		}
+		if (zoomPrevious != s.zoom) {
+			for (int i = 0; i < s.members.size(); i++) {
+				Member m = s.members.get(i);
+				m.X += (int) Math.round((-rolls * zoomSpeed)
+						* ((m.X + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2)) - xx));
+				m.Y += (int) Math.round((-rolls * zoomSpeed)
+						* ((m.Y + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2)) - yy));
+			}
+		}
+		}else if(e.isControlDown()){
+			for (int i = 0; i < s.members.size(); i++) {
+				s.members.get(i).X+=rolls*(Math.pow(s.zoom,2)*moveSpeed);
+			}
+		}else if (e.isShiftDown()){
+			for (int i = 0; i < s.members.size(); i++) {
+				s.members.get(i).Y+=rolls*(Math.pow(s.zoom,2)*moveSpeed);
+			}
+		}
+		f.repaint();
 
 	}
 }

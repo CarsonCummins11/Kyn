@@ -1,0 +1,76 @@
+0 = recessive autosomal
+1 = dominant autosomal
+2 = recessive x-linked (chromosomal)
+3 = dominant x-linked (chromosomal)
+4 = can blend (based on multiple genes)
+5 = mutation
+* = multiple ways to inherit, may not want to use
+**
+Red Hair: 4
+Brown Hair: 4
+Black Hair: 4
+Blonde Hair: 4
+**
+Blue Eyes: 4
+Brown Eyes: 4
+Green Eyes: 4
+Grey Eyes: 4
+Hazel Eyes: 4
+**
+Attatched Earlobe: 0
+Unattatched Earlobe: 1
+**
+Widow's Peak: 1
+Straight Hairline: 0
+**
+Dimples: 1
+Freckles: 1
+Able to taste PTC: 1
+Non-pigmented Iris: 0
+Bent Little Finger: 1
+Hitchhiker’s Thumb: 4
+Red-Green Colorblind: 2
+**
+*Achondroplasia: 20% 1, 80% 5
+*Amyotrophic lateral sclerosis: 10% 1, 90% 5
+Beta thalassemia: 0
+Crouzon syndrome: 1
+Cystic fibrosis: 0
+Duchenne and Becker muscular dystrophy: 2
+Familial dysautonomia: 0
+*Fanconi anemia: 0 (Ocassionaly 2)
+Fragile X syndrome: 3
+Glutaric aciduria type 1: 0
+Hemochromatosis type 1: 0
+Hemochromatosis type 2: 0
+Hemochromatosis type 3: 0
+Hemochromatosis type 4: 1
+Hemophilia A: 2
+Hemophilia B: 2
+Hemophagocytic lymphohistiocytosis: 0
+Holt-Oram syndrome: 1
+Hunter syndrome: 2
+Huntington's disease: 1
+Hypokalemic periodic paralysis: 1
+Hypophosphatemic rickets: 3
+Incontinentia pigmenti: 3
+Lynch syndrome: 1
+*Marfan syndrome: 75% 1, 25% 5
+Menkes disease: 2
+Metachromatic leukodystrophy: 0
+Myotonic dystrophy type 1: 1
+Neurofibromatosis type 1: 1
+Norrie syndrome: 2
+Oculocutaneous albinism type 2: 0
+Phenylketonuria: 0
+Polycystic kidney disease 1: 1
+Polycystic kidney disease 2: 1
+Pompe's syndrome: 0
+Rett's syndrome: 3
+Sickle cell anemia: 0
+Smith-Lemli-Opitz syndrome: 0
+*Spastic paraplegia 4: most 1, some 5
+Spondyloepiphyseal dysplasia congenita: 1
+Tay-Sachs disease: 0
+*Tuberous sclerosis complex: 33% 1, 66% 5
+Von Hippel-Lindau syndrome: 1

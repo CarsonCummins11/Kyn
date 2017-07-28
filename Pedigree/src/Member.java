@@ -22,6 +22,7 @@ public class Member {
 	int X;
 	int Y;
 	int column = -1;
+	int row = -1;
 	public Member(int G, boolean C, int x, int y) {
 		Gender = G;
 		Carrier = C;

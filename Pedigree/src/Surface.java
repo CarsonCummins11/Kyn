@@ -1,5 +1,6 @@
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
@@ -16,12 +17,15 @@ public class Surface extends JPanel {
 	Member[] Parents = new Member[2];
 	public double zoom = 1;
 	public static final int CIRCLE_DIAMETER = 20;
-
+	public static final Dimension DELETE_BOX = new Dimension(75,75);
 	public Surface() {
 
 	}
 
 	public void paintComponent(Graphics g) {
+		int delBoxX =(int) (getWidth()-DELETE_BOX.getWidth());
+		int delBoxY = (int) (getHeight()-DELETE_BOX.getHeight());
+	
 		zoom = Math.abs(zoom);
 		super.paintComponent(g);
 		for (int i = 0; i < members.size(); i++) {
@@ -55,7 +59,13 @@ public class Surface extends JPanel {
 			}
 		
 		}
-		g.setColor(Color.black);
+		g.fillRect(delBoxX, delBoxY, (int)DELETE_BOX.getWidth(), (int)DELETE_BOX.getHeight());
+		g2.setStroke(new BasicStroke(8, BasicStroke.CAP_ROUND, BasicStroke.JOIN_BEVEL, 0));
+		g2.setColor(Color.red);
+		int nn = 5;
+		g2.drawLine(delBoxX+nn, delBoxY+nn, getWidth()-nn, getHeight()-nn);
+		g2.drawLine(delBoxX+nn, getHeight()-nn,getWidth()-nn , delBoxY+nn);
+		g2.setColor(Color.black);
 		g2.setStroke(new BasicStroke(9));
 		g2.drawLine(20, 0, 20, this.getHeight());
 		g2.drawLine(20, 0, 0, 20);
