@@ -377,6 +377,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			String familyTree = buildStringFromTree();
 			if (familyTree != null) {
 				try {
+					familyTree = familyTree.substring(0,familyTree.length() - 2);
 					PrintWriter write = new PrintWriter(DATA_OUTPUT_FILE);
 					write.print(familyTree);
 					write.close();
@@ -416,8 +417,8 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			if (name != null) {
 				try {
 					String output = buildStringFromTree();
-					System.out.println(output);
 					if (output != null) {
+						output = output.substring(0, output.length() - 2);
 						PrintWriter write = new PrintWriter(new File(name + ".txt"));
 						write.print(output);
 						write.close();
@@ -440,6 +441,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		String ret = "";
 		ret += s.members.size() + "\r\n";
 		// ret+=getAllInts(searchBar.getText())+"\r\n";
+		// good^^
 		for (int i = 0; i < s.lines.size(); i++) {
 			if (s.Relations.get(i) == RelationMenu.MARRIED) {
 				s.lines.get(i)[0].Married.add(s.lines.get(i)[1]);
@@ -496,7 +498,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 
 	public String getRow(Member mm) {
 		int ret = mm.relations(0, 0, s.members.size());
-		System.out.println("gen" + ret);
+
 		return Integer.toString(ret);
 	}
 

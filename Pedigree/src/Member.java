@@ -19,6 +19,7 @@ public class Member {
 	BufferedImage femaleCarrier = null;
 	BufferedImage maleNonCarrier = null;
 	BufferedImage femaleNonCarrier = null;
+	ArrayList<Integer[]> ParentCoordinates=new ArrayList<Integer[]>();
 	int X;
 	int Y;
 	int column = -1;

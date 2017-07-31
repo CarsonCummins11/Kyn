@@ -75,58 +75,67 @@ JLabel header = new JLabel("<html><span style='font-size:50px'>"+"Pedigree"+"</s
 		
 	}
 	public boolean isLegalFormat(String data) {
-		ArrayList<String> lines = new ArrayList<String>();
-		ArrayList<ArrayList<String>> memStrings = new ArrayList<ArrayList<String>>();
-		memStrings.add(new ArrayList<String>());
-		String curLine = "";
 		for (int i = 0; i < data.length(); i++) {
-			if(data.charAt(i)!='\n'){
-				curLine+=data.charAt(i);
-			}else{
-				lines.add(curLine);
-				curLine = "";
+			if(!Character.isDigit(data.charAt(i))&&data.charAt(i)!='\n'){
+				return false;
 			}
+		
 		}
+		ArrayList<Integer> lines = intListToArrayList(data);
 		lines.remove(0);
-		int prevlineNum = 0;
-		int numJumps=9;
-		for (int i = 0; i <lines.size(); i++) {
-		if(i-prevlineNum==2){
-			if (!(Integer.parseInt(lines.get(i))==0||Integer.parseInt(lines.get(i))==1)){
-			return false;
+		int startIndex = 0;
+		while(true){
+			if(lines.get(startIndex+2)>1||lines.get(startIndex+1)>1||lines.get(startIndex)>1){
+				System.out.println(startIndex);
+				return false;
 			}
-			numJumps=Integer.parseInt(lines.get(i))==0?5:9;
+			startIndex+=lines.get(startIndex+2)==1?9:5;
+			if(startIndex>=lines.size()){
+				break;
+			}
 		}
-			if(i-prevlineNum==numJumps){
-			memStrings.get(memStrings.size()-1).add(lines.get(i));
-			memStrings.add(new ArrayList<String>());
-		}else{
-			memStrings.get(memStrings.size()-1).add(lines.get(i));
-		}
-		}
-		for (int i = 0; i < memStrings.size(); i++) {
-			int[] vals = new int[memStrings.get(i).size()];
-			for (int j = 0; j < memStrings.get(i).size(); j++) {
-				if(isInteger(memStrings.get(i).get(j))){
-				vals[j] = Integer.parseInt(memStrings.get(i).get(j));
-				System.out.println(vals[j]);
-				}else{
+		/*int linesInCurrentMember = 8;
+		int memberStartingIndex = 0;
+		for (int i = 0; i < lines.size(); i++) {
+			if(i==0){
+				linesInCurrentMember = lines.get(i+2)==1?8:4;
+				if(lines.get(i)>1){
 					return false;
 				}
 			}
-			if((vals[0]==1||vals[0]==0)&&
-			(vals[1]==1||vals[1]==0)&&
-			(vals[2]==1||vals[2]==0)&&
-			(vals[3]>=0)&&(vals[4]>=0)){
-				
-				//you're almost definitely good
-			}else{
-				return false;
+			if(i-memberStartingIndex>=linesInCurrentMember){
+				memberStartingIndex=i;
+				linesInCurrentMember = lines.get(i+2)==1?8:4;
+				if(lines.get(i)>1){
+					return false;
+				}
+				}else if(i-memberStartingIndex<=2){
+					if(lines.get(i)>1){
+						System.out.println(i);
+						return false;
+					}
+				}
 			}
-		}
+			*/
+		
 		return true;
+		
 	}
 
+//Good
+public ArrayList<Integer> intListToArrayList(String data){
+	ArrayList<Integer> lines = new ArrayList<Integer>();
+	String cur = "";
+	for (int i = 0; i < data.length(); i++) {
+		if(data.charAt(i)!='\n'){
+			cur+=data.charAt(i);
+		}else{
+			lines.add(Integer.parseInt(cur));
+			cur = "";
+		}
+	}
+	return lines;
+}
 	public boolean isInteger(String s) {
 		for (int i = 0; i < s.length(); i++) {
 			if(!Character.isDigit(s.charAt(i))){
@@ -147,10 +156,6 @@ JLabel header = new JLabel("<html><span style='font-size:50px'>"+"Pedigree"+"</s
 		Member[] temp = {mm.get(i),mm.get(i).Married.get(j)};
 		ret.add(temp);
 	}
-	for (int j = 0; j < mm.get(i).Children.size(); j++) {
-		Member[] temp = {mm.get(i),mm.get(i).Children.get(j)};
-		ret.add(temp);
-	}
 }
 		return ret;
 	}
@@ -162,7 +167,6 @@ JLabel header = new JLabel("<html><span style='font-size:50px'>"+"Pedigree"+"</s
 		ret.add(RelationMenu.DESCENDANT);
 	}
 	for (int j = 0; j < mm.get(i).Married.size(); j++) {
-		
 		ret.add(RelationMenu.MARRIED);
 	}
 	
@@ -171,57 +175,47 @@ JLabel header = new JLabel("<html><span style='font-size:50px'>"+"Pedigree"+"</s
 	}
 
 	public ArrayList<Member> getMembers(String data){
-		ArrayList<Member> ret = new ArrayList<Member>();
-		ArrayList<String> lines = new ArrayList<String>();
-		ArrayList<ArrayList<String>> memStrings = new ArrayList<ArrayList<String>>();
-		memStrings.add(new ArrayList<String>());
-		String curLine = "";
-		for (int i = 0; i < data.length(); i++) {
-			if(data.charAt(i)!='\n'){
-				curLine+=data.charAt(i);
-			}else{
-				lines.add(curLine);
-				curLine = "";
-			}
-		}
+		ArrayList<Integer> lines = intListToArrayList(data);
 		lines.remove(0);
-		int prevlineNum = 0;
-		int numJumps=9;
-		for (int i = 0; i <lines.size(); i++) {
-			if(i-prevlineNum==2){
-				numJumps=Integer.parseInt(lines.get(i))==0?5:9;
+		ArrayList<Member> ret = new ArrayList<Member>();
+		int startIndex = 0;
+		while(true){
+		Member temp = new Member(0,false,0,0);
+		temp.Carrier = lines.get(startIndex)==0?false:true;
+		temp.row = lines.get(startIndex+3);
+		temp.column = lines.get(startIndex+4);
+		if(lines.get(startIndex+2)==1){
+			Integer[] tempArray1 = {lines.get(startIndex+5),lines.get(startIndex+6)};
+			temp.ParentCoordinates.add(tempArray1);
+			Integer[] tempArray2 = {lines.get(startIndex+7),lines.get(startIndex+8)};
+			temp.ParentCoordinates.add(tempArray2);
+			
+		}
+		System.out.println("yo");
+			startIndex+=lines.get(startIndex+2)==1?9:5;
+			ret.add(temp);
+			if(startIndex>=lines.size()){
+				break;
 			}
-				if(i-prevlineNum==numJumps){
-			memStrings.get(memStrings.size()-1).add(lines.get(i));
-			memStrings.add(new ArrayList<String>());
-		}else{
-			memStrings.get(memStrings.size()-1).add(lines.get(i));
-		}
-		}
-		for (int i = 0; i < memStrings.size(); i++) {
-			Member toAdd = new Member(0,false,0,0);
-			toAdd.Carrier = (memStrings.get(i).get(0).equals(1)?true:false);
-			toAdd.row = Integer.parseInt(memStrings.get(i).get(3));
-			toAdd.column = Integer.parseInt(memStrings.get(i).get(4));
-			ret.add(toAdd);
 		}
 		for (int i = 0; i < ret.size(); i++) {
-			if(memStrings.get(i).size()>5){
-			int p1Row = Integer.parseInt(memStrings.get(i).get(5));
-			int p1Col = Integer.parseInt(memStrings.get(i).get(6));
-			int p2Row = Integer.parseInt(memStrings.get(i).get(7));
-			int p2Col = Integer.parseInt(memStrings.get(i).get(8));
-		ret.get(i).Parents.add(getParentByRowColumn(ret,p1Row,p1Col));
-		ret.get(i).Parents.add(getParentByRowColumn(ret,p2Row,p2Col));
-		for (int j = 0; j < ret.get(i).Parents.size(); j++) {
-			ret.get(i).Parents.get(j).Children.add(ret.get(i));
-			ArrayList<Member> temp = ret.get(i).Parents;
-			temp.remove(ret.get(i).Parents.get(j));
-			ret.get(i).Parents.get(j).Married.addAll(temp);
-		}
+			ret.get(i).X = ret.get(i).column*(1000/inMyGen(ret,ret.get(i).row));
+			ret.get(i).Y = ret.get(i).row*(1000/totalGens(ret));
+			Member mm = ret.get(i);
+			for (int j = 0; j < mm.ParentCoordinates.size(); j++) {
+				mm.Parents.add(getMemberByRowColumn(ret,mm.ParentCoordinates.get(j)[0],mm.ParentCoordinates.get(j)[1]));
 			}
-		ret.get(i).X = (int) (ret.get(i).column*Toolkit.getDefaultToolkit().getScreenSize().getWidth()/inMyGen(ret,ret.get(i).row));
-		ret.get(i).Y = (int)((int)ret.get(i).row*Toolkit.getDefaultToolkit().getScreenSize().getWidth()/totalGens(ret));
+		}
+		for (int i = 0; i < ret.size(); i++) {
+			Member mm = ret.get(i);
+			for (int j = 0; j < mm.Parents.size(); j++) {
+				mm.Parents.get(j).Children.add(mm);
+				for (int k = 0; k < mm.Parents.size(); k++) {
+					if(!mm.Parents.get(j).equals(mm.Parents.get(k))){
+						mm.Parents.get(j).Married.add(mm.Parents.get(k));
+					}
+				}
+			}
 		}
 		return ret;
 		
@@ -248,7 +242,7 @@ JLabel header = new JLabel("<html><span style='font-size:50px'>"+"Pedigree"+"</s
 		return used.size();
 	}
 
-	public Member getParentByRowColumn(ArrayList<Member> members,int row, int column){
+	public Member getMemberByRowColumn(ArrayList<Member> members,int row, int column){
 		for (int i = 0; i < members.size(); i++) {
 			if(members.get(i).column==column&&members.get(i).row==row){
 				return members.get(i);
