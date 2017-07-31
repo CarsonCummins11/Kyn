@@ -159,23 +159,6 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 					m = getClicked(x, y);
 
 				} else {
-					int delBoxX = (int) (s.getWidth() - Surface.DELETE_BOX.getWidth());
-					int delBoxY = (int) (s.getHeight() - Surface.DELETE_BOX.getHeight());
-					for (int i = 0; i < s.members.size(); i++) {
-						Member mm = s.members.get(i);
-						if (mm.X > delBoxX && mm.X < s.getWidth() && mm.Y > delBoxY && mm.Y < s.getHeight()) {
-							for (int j = 0; j < s.lines.size(); j++) {
-								if (s.lines.get(i)[0].equals(mm) || s.lines.get(i)[1].equals(mm)) {
-									s.lines.remove(i);
-									s.Relations.remove(i);
-									s.lines.trimToSize();
-									s.Relations.trimToSize();
-								}
-							}
-							s.members.remove(i);
-
-						}
-					}
 					f.repaint();
 					m = null;
 				}
