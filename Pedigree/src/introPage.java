@@ -28,13 +28,20 @@ JButton loadTree = new JButton("Load Tree");
 Container menu = new Container();
 JLabel header = new JLabel();
 	public introPage() {
+		loadTree.setForeground(Color.BLACK);
+		newTree.setForeground(Color.BLACK);
+		loadTree.setBackground(Center.THEME_COLOR);
+		newTree.setBackground(Center.THEME_COLOR);
+		try {
+			f.setIconImage(ImageIO.read(new File("Logo_Square.png")));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		f.setSize(600, 500);
 		f.setVisible(true);
 		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		f.setLayout(new GridLayout(2,1));
 		menu.setLayout(new GridLayout());
-		loadTree.setBackground(Color.WHITE);
-		newTree.setBackground(Color.WHITE);
 		menu.add(loadTree);
 		menu.add(newTree);
 		newTree.addActionListener(this);

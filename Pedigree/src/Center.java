@@ -17,6 +17,7 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
@@ -41,11 +42,16 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	JButton startCalc = new JButton("Calculate");
 	Member[] parents = new Member[2];
 	JTextField searchBar = new JTextField("Search for Traits");
-	final static Color THEME_COLOR = new Color(29,180,76);
+	final static Color THEME_COLOR = new Color(103,173,110);
 	public static final String DATA_OUTPUT_FILE = "Ancestors.txt";
 
 	public Center() {
 		// setting up the frame/general GUI
+		try {
+			f.setIconImage(ImageIO.read(new File("Logo_Square.png")));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		f.addMouseWheelListener(this);
 		s.addMouseListener(this);
 		s.addMouseMotionListener(this);
@@ -64,12 +70,12 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		f.setVisible(true);
 		startCalc.addActionListener(this);
 		addMem.addActionListener(this);
-		addMem.setBackground(Color.white);
-		addMem.setForeground(THEME_COLOR);
-		startCalc.setForeground(THEME_COLOR);
-		save.setForeground(THEME_COLOR);
-		startCalc.setBackground(Color.white);
-		save.setBackground(Color.white);
+		addMem.setBackground(THEME_COLOR);
+		addMem.setForeground(Color.black);
+		startCalc.setForeground(Color.black);
+		save.setForeground(Color.black);
+		startCalc.setBackground(THEME_COLOR);
+		save.setBackground(THEME_COLOR);
 		
 
 	}
