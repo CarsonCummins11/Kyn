@@ -1,14 +1,19 @@
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Font;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -17,25 +22,26 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
 
 public class introPage implements ActionListener{
-JFrame f = new JFrame("Pedigree");
+JFrame f = new JFrame("Kyn");
 JButton newTree = new JButton("New Tree");
 JButton loadTree = new JButton("Load Tree");
 Container menu = new Container();
-JLabel header = new JLabel("<html><span style='font-size:50px'>"+"Pedigree"+"</span></html>", SwingConstants.CENTER);
+JLabel header = new JLabel();
 	public introPage() {
-		f.setSize(500, 500);
+		f.setSize(600, 500);
 		f.setVisible(true);
 		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		f.setLayout(new GridLayout(2,1));
-		header.setBackground(Color.GREEN);
-		header.setOpaque(true);
 		menu.setLayout(new GridLayout());
+		loadTree.setBackground(Color.WHITE);
+		newTree.setBackground(Color.WHITE);
 		menu.add(loadTree);
 		menu.add(newTree);
 		newTree.addActionListener(this);
 		loadTree.addActionListener(this);
 		f.add(header);
 		f.add(menu);
+		header.setIcon(new ImageIcon(new ImageIcon("Logo_Banner.png").getImage().getScaledInstance(header.getWidth(), header.getHeight(), Image.SCALE_SMOOTH)));
 	}
 
 	public static void main(String[] args) {
@@ -94,29 +100,6 @@ JLabel header = new JLabel("<html><span style='font-size:50px'>"+"Pedigree"+"</s
 				break;
 			}
 		}
-		/*int linesInCurrentMember = 8;
-		int memberStartingIndex = 0;
-		for (int i = 0; i < lines.size(); i++) {
-			if(i==0){
-				linesInCurrentMember = lines.get(i+2)==1?8:4;
-				if(lines.get(i)>1){
-					return false;
-				}
-			}
-			if(i-memberStartingIndex>=linesInCurrentMember){
-				memberStartingIndex=i;
-				linesInCurrentMember = lines.get(i+2)==1?8:4;
-				if(lines.get(i)>1){
-					return false;
-				}
-				}else if(i-memberStartingIndex<=2){
-					if(lines.get(i)>1){
-						System.out.println(i);
-						return false;
-					}
-				}
-			}
-			*/
 		
 		return true;
 		
@@ -191,7 +174,6 @@ public ArrayList<Integer> intListToArrayList(String data){
 			temp.ParentCoordinates.add(tempArray2);
 			
 		}
-		System.out.println("yo");
 			startIndex+=lines.get(startIndex+2)==1?9:5;
 			ret.add(temp);
 			if(startIndex>=lines.size()){

@@ -24,7 +24,18 @@ public class Surface extends JPanel {
 	public void paintComponent(Graphics g) {
 		zoom = Math.abs(zoom);
 		super.paintComponent(g);
+		g.setColor(Color.DARK_GRAY);
+		for (int i = 0; i < getWidth(); i+=(int)Math.round(zoom*Member.IMAGE_SIZE)) {
+			g.drawLine(i, 0, i, getHeight());
+		}
+		for (int i = 0; i < getHeight(); i+=(int)Math.round(zoom*Member.IMAGE_SIZE)) {
+			g.drawLine(0, i, getWidth(), i);
+		}
+		g.setColor(Color.BLACK);
 		for (int i = 0; i < members.size(); i++) {
+			int gridSize = (int)Math.round(zoom*Member.IMAGE_SIZE);
+			members.get(i).X = gridSize*Math.round((members.get(i).X+gridSize/2)/gridSize);
+			members.get(i).Y = gridSize*Math.round((members.get(i).Y+gridSize/2)/gridSize);
 			members.get(i).draw(g,zoom);
 		}
 		g.setColor(Color.BLACK);
@@ -56,13 +67,14 @@ public class Surface extends JPanel {
 		
 		}
 		g.setColor(Color.black);
-		g2.setColor(Color.black);
+		g2.setColor(Center.THEME_COLOR);
 		g2.setStroke(new BasicStroke(9));
 		g2.drawLine(20, 0, 20, this.getHeight());
 		g2.drawLine(20, 0, 0, 20);
 		g2.drawLine(20,0,40,20);
 		g2.drawLine(20, this.getHeight(), 0, this.getHeight()-20);
 		g2.drawLine(20, this.getHeight(), 40, this.getHeight()-20);
+		g2.setColor(Color.BLACK);
 		g.drawString("Oldest", 29, 40);
 		g.drawString("Youngest", 29, this.getHeight()-40);
 		if (relmenu != null) {
