@@ -3,7 +3,7 @@
 
 void ancestors::load_tree(person& mystery){
 
-    ifstream ancestry("Ancestors.txt");
+    ifstream ancestry("ancestors.tree");
     vector<int> anAncestor;
 
     // read in # of ancestors
@@ -19,7 +19,7 @@ void ancestors::load_tree(person& mystery){
 
     vect_to_persons(mystery);
 
-    //display_tree();
+    display_tree();
 }
 
 
@@ -43,22 +43,37 @@ void ancestors::read_ancestry(ifstream & ancestry, vector<int>  & anAncestor)
 	ancestry >> child_number;
 	anAncestor.push_back(child_number);
 
-	ancestry >> parent1_child_number;
-	anAncestor.push_back(parent1_child_number);
+	if (has_parents == true)
+    {
+        ancestry >> parent1_child_number;
+        anAncestor.push_back(parent1_child_number);
 
-	ancestry >> parent1_generation;
-	anAncestor.push_back(parent1_generation);
+        ancestry >> parent1_generation;
+        anAncestor.push_back(parent1_generation);
 
-	ancestry >> parent2_child_number;
-	anAncestor.push_back(parent2_child_number);
+        ancestry >> parent2_child_number;
+        anAncestor.push_back(parent2_child_number);
 
-	ancestry >> parent2_generation;
-	anAncestor.push_back(parent2_generation);
+        ancestry >> parent2_generation;
+        anAncestor.push_back(parent2_generation);
+    }
+
+    // If we do not have parents, we will use -1 as a flag.
+    // This way, we ensure data alignment (that is, ALL ancestors
+    // have the same amount of data).
+    else
+    {
+        anAncestor.push_back(-1);
+        anAncestor.push_back(-1);
+        anAncestor.push_back(-1);
+        anAncestor.push_back(-1);
+    }
 }
 
 
 void ancestors::vect_to_persons(person& mystery)
 {
+    bool up = true;
     person temp_person;
     for (int ii = 0; ii < family_tree.size(); ++ii)
     {
@@ -95,6 +110,52 @@ void ancestors::vect_to_persons(person& mystery)
 
     mystery.generation = mystery.parent1Gen - 1;
     mystery.childNo = -1;
+
+    // Insertion Sort
+
+    for (int ii = 0; ii < people.size() - 1; ++ii)
+    {
+        if (up == true)
+        {
+            if (people[ii].generation < people[ii + 1].generation)
+            {
+                temp_person = people[ii];
+                people[ii] = people[ii + 1];
+                people[ii + 1] = temp_person;
+                up = false;
+            }
+            else if (people[ii].generation == people[ii + 1].generation && people[ii].childNo < people[ii + 1].childNo)
+            {
+                temp_person = people[ii];
+                people[ii] = people[ii + 1];
+                people[ii + 1] = temp_person;
+                up = false;
+            }
+        }
+        else
+        {
+            for (int gg = ii - 1; gg > -1; --gg)
+            {
+                if (people[gg].generation < people[gg + 1].generation)
+                {
+                    temp_person = people[gg];
+                    people[gg] = people[gg + 1];
+                    people[gg + 1] = temp_person;
+                }
+                else if (people[gg].generation == people[gg + 1].generation && people[gg].childNo < people[gg + 1].childNo)
+                {
+                    temp_person = people[gg];
+                    people[gg] = people[gg + 1];
+                    people[gg + 1] = temp_person;
+                }
+                else
+                {
+                    up = true;
+                    break;
+                }
+            }
+        }
+    }
 }
 
 probability ancestors::goingDownProbability (person childrenArray [], int arrayLength, string p1Genotype, bool p2Phenotype) {
@@ -512,7 +573,7 @@ probability ancestors::thecontrolpanel (person mystery) {
     return average;
 }
 
-/*
+
 void ancestors::display_tree(){
 
     // displays family_tree vector
@@ -533,15 +594,18 @@ void ancestors::display_tree(){
         cout << people[ii].follow;
         cout << people[ii].generation;
         cout << people[ii].childNo;
-        cout << people[ii].parent1No;
-        cout << people[ii].parent1Gen;
-        cout << people[ii].parent2No;
-        cout << people[ii].parent2Gen;
+        if (people[ii].follow == 1)
+        {
+            cout << people[ii].parent1No;
+            cout << people[ii].parent1Gen;
+            cout << people[ii].parent2No;
+            cout << people[ii].parent2Gen;
+        }
         cout << endl;
     }
     cout << endl;
 }
-*/
+
 
 int main ()
 {
