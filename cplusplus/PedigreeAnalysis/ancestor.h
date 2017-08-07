@@ -53,7 +53,7 @@ public:
     void load_tree(person& mystery); // main function that manages file I.O. Calls on read_in function to help transfer data
     void read_ancestry(ifstream & ancestry, vector<int> & anAncestor); // reads in data for each ancestor one at a time
     void vect_to_persons(person& mystery); // takes 2 dimensional vector of ancestors and transfers them into a vector of person structs
-    //void display_tree(); // Used for testing
+    void display_tree(); // Used for testing
     probability goingDownProbability (person childrenArray [], int arrayLength, string p1Genotype, bool p2Phenotype);
     probability goingUpProbability (int childNo, person childrenArray [], string KnownGenotype, bool parent1affected, bool parent2affected);
     person findCommonPoint (person disease, person mystery, person* diseaseUp, person* mysteryUp, int&mysteryUpCount); //finds common point of disease and mystery person

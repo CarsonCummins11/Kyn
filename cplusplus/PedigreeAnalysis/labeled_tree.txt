@@ -1,0 +1,39 @@
+5 -- 5 ancestors to read in
+------------------------------
+0 -- Is not carrier
+1 -- Is a parent
+0 -- Does not have parents
+1 -- 1st generation
+0 -- I am child 0
+------------------------------
+2 -- Is a carrier (not 0, thus true)
+1 -- Is a parent
+0 -- Does not have parents
+1 -- 1st generation
+0 -- I am child 0
+-----------------------------
+1 -- Is a carrier
+0 -- Is not a parent
+1 -- Does have parents
+0 -- Generation 0
+0 -- I am child 0
+0 -- 1st parent's child number
+0 -- 1st parents generation
+0 -- 2nd parent's child number
+0 -- 2nd parent's generation
+-----------------------------
+1 -- Is a carrier
+1 -- Is a parent
+1 -- Has parents
+0 -- Generation 0
+0 -- Child number
+0 -- Parent 1's child number
+0 -- Parent 1's generation
+0 -- Parent 2's child number
+0 -- Parent 2's generation
+-----------------------------
+0 -- Is not a carrier
+0 -- Is not a parent
+0 -- Does not have parents
+0 -- Generation 0
+0 -- Child 0
