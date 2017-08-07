@@ -4,7 +4,7 @@
 1 <- Boolean: (has_parents) Determines whether or not the person has parents. (0 = false / 1 = true)
 3 <- (generation) it's own generation
 6 <- (child_number) it's own child number
-3 <- (parent1_child_number) it's first parent's child number (if no parent there will be nothing)
-2 <- (parent1_generation) it's first parent's generation ((if no parent there will be nothing)
-7 <- (parent2_child_number) it's second parent's child number (if no parent there will be nothing)
-2 <- (parent2_generation) it's second parent's generation ((if no parent there will be nothing)
+3 <- (parent1_generation) it's first parent's generation ((if no parent there will be nothing)
+2 <- (parent1_child_number) it's first parent's child number (if no parent there will be nothing)
+7 <- (parent2_generation) it's second parent's generation ((if no parent there will be nothing)
+2 <- (parent2_child_number) it's second parent's child number (if no parent there will be nothing)
