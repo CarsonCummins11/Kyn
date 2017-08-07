@@ -1,9 +1,7 @@
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
@@ -24,19 +22,17 @@ public class Surface extends JPanel {
 	public void paintComponent(Graphics g) {
 		zoom = Math.abs(zoom);
 		super.paintComponent(g);
+		for (int i = 0; i < members.size(); i++) {
+			int gridSize = (int)Math.round(zoom*Member.IMAGE_SIZE);
+			members.get(i).X = gridSize*Math.round((members.get(i).X+gridSize/2)/gridSize);
+			members.get(i).Y = gridSize*Math.round((members.get(i).Y+gridSize/2)/gridSize);
+		}
 		g.setColor(Color.DARK_GRAY);
 		for (int i = 0; i < getWidth(); i+=(int)Math.round(zoom*Member.IMAGE_SIZE)) {
 			g.drawLine(i, 0, i, getHeight());
 		}
 		for (int i = 0; i < getHeight(); i+=(int)Math.round(zoom*Member.IMAGE_SIZE)) {
 			g.drawLine(0, i, getWidth(), i);
-		}
-		g.setColor(Color.BLACK);
-		for (int i = 0; i < members.size(); i++) {
-			int gridSize = (int)Math.round(zoom*Member.IMAGE_SIZE);
-			members.get(i).X = gridSize*Math.round((members.get(i).X+gridSize/2)/gridSize);
-			members.get(i).Y = gridSize*Math.round((members.get(i).Y+gridSize/2)/gridSize);
-			members.get(i).draw(g,zoom);
 		}
 		g.setColor(Color.BLACK);
 		Graphics2D g2 = (Graphics2D) g;
@@ -48,12 +44,15 @@ public class Surface extends JPanel {
 			int x = (temp[0].X + (int)Math.round(zoom*Member.IMAGE_SIZE / 2) + temp[1].X + (int)Math.round(zoom*Member.IMAGE_SIZE / 2)) / 2;
 			int y = (temp[0].Y + (int)Math.round(zoom*Member.IMAGE_SIZE / 2) + temp[1].Y +(int)Math.round(zoom*Member.IMAGE_SIZE / 2)) / 2;
 			if (Relations.get(i) == RelationMenu.MARRIED) {
-				g.setColor(Color.GREEN);
+				g.setColor(new Color(23, 72, 150));
 			} else {
-				g.setColor(Color.BLUE);
+				g.setColor(new Color(150,22,22));
 			}
 			g.fillOval(x - (int)Math.round(zoom*CIRCLE_DIAMETER / 2), y - (int)Math.round(zoom*CIRCLE_DIAMETER / 2), (int)Math.round(zoom*CIRCLE_DIAMETER), (int)Math.round(zoom*CIRCLE_DIAMETER));
 			g.setColor(Color.black);
+		}
+		for (int i = 0; i < members.size(); i++) {
+			members.get(i).draw(g,zoom);
 		}
 		for (int i = 0; i < Parents.length; i++) {
 			float r = (float) .99;

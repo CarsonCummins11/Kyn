@@ -23,5 +23,6 @@ public class RelationMenu {
 		g.setColor(Color.BLACK);
 		g.drawString("Married" + (Status == 0 ? "<" : ""), X, Y + LINE_GAP);
 		g.drawString("Descendant" + (Status == 0 ? "" : "<"), X, Y + 2 * LINE_GAP);
+		g.drawString("Delete", X, Y+3*LINE_GAP);
 	}
 }

@@ -23,6 +23,7 @@ public class Menu {
 		g.drawString("Female " + (linked.Gender == Member.FEMALE ? "<" : ""), X, Y + 2 * LINE_GAP);
 		g.drawString("Carrier " + (linked.Carrier ? "<" : ""), X, Y + 3 * LINE_GAP);
 		g.drawString("Non-Carrier " + (linked.Carrier ? "" : "<"), X, Y + 4 * LINE_GAP);
+		g.drawString("Delete", X,Y+5*LINE_GAP );
 
 	}
 

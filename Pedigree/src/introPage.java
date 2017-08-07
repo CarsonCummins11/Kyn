@@ -1,7 +1,5 @@
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Font;
-import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -14,20 +12,21 @@ import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class introPage implements ActionListener{
 JFrame f = new JFrame("Kyn");
-JButton newTree = new JButton("New Tree");
-JButton loadTree = new JButton("Load Tree");
+Button newTree = new Button("New Tree");
+Button loadTree = new Button("Load Tree");
 Container menu = new Container();
 JLabel header = new JLabel();
 	public introPage() {
+		newTree.setDescription("Create a new empty tree");
+		loadTree.setDescription("Load an already created tree");
 		loadTree.setForeground(Color.BLACK);
 		newTree.setForeground(Color.BLACK);
 		loadTree.setBackground(Center.THEME_COLOR);
@@ -38,8 +37,9 @@ JLabel header = new JLabel();
 			e.printStackTrace();
 		}
 		f.setSize(600, 500);
+		f.setResizable(false);
 		f.setVisible(true);
-		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		f.setLayout(new GridLayout(2,1));
 		menu.setLayout(new GridLayout());
 		menu.add(loadTree);
@@ -63,6 +63,9 @@ JLabel header = new JLabel();
 		}else{
 			String data = "";
 			JFileChooser choose = new JFileChooser();
+			choose.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("Tree Files (.tree)", "tree");
+			choose.setFileFilter(filter);
 			int retVal = choose.showOpenDialog(f);
 			if(retVal == JFileChooser.APPROVE_OPTION){
 				File ff = choose.getSelectedFile();
@@ -90,6 +93,7 @@ JLabel header = new JLabel();
 	public boolean isLegalFormat(String data) {
 		for (int i = 0; i < data.length(); i++) {
 			if(!Character.isDigit(data.charAt(i))&&data.charAt(i)!='\n'){
+				System.out.println("Broken because input contains a non-digit character");
 				return false;
 			}
 		
@@ -99,7 +103,7 @@ JLabel header = new JLabel();
 		int startIndex = 0;
 		while(true){
 			if(lines.get(startIndex+2)>1||lines.get(startIndex+1)>1||lines.get(startIndex)>1){
-				System.out.println(startIndex);
+
 				return false;
 			}
 			startIndex+=lines.get(startIndex+2)==1?9:5;

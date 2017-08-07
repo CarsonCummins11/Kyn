@@ -1,15 +1,10 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -20,9 +15,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Scanner;
+
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -31,22 +27,25 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	// Defines all the wide scoped variables in the class
 	JFrame f = new JFrame("Tree Builder");
 	Member m = null;
-	JButton addMem = new JButton("Add");
+	Button addMem = new Button("Add");
 	Container menu = new Container();
 	Surface s = new Surface();
 	boolean movable = true;
 	Menu showing;
 	Member strt = null;
 	Point PP;
-	JButton save = new JButton("Save");
-	JButton startCalc = new JButton("Calculate");
+	Button save = new Button("Save");
+	Button startCalc = new Button("Calculate");
 	Member[] parents = new Member[2];
-	JTextField searchBar = new JTextField("Search for Traits");
+	JTextField searchBar = new JTextField("Search for Traits		");
 	final static Color THEME_COLOR = new Color(103,173,110);
-	public static final String DATA_OUTPUT_FILE = "Ancestors.txt";
+	public static final String DATA_OUTPUT_FILE = "Ancestors.tree";
 
 	public Center() {
 		// setting up the frame/general GUI
+		save.setDescription("Save this\ntree");
+		startCalc.setDescription("Calculate\nthe likelihood\nof the trait");
+		addMem.setDescription("Add a new\nmember to\nthe tree");
 		try {
 			f.setIconImage(ImageIO.read(new File("Logo_Square.png")));
 		} catch (IOException e) {
@@ -85,38 +84,39 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		s.members = mems;
 		s.Relations = rels;
 		s.lines = lins;
+		save.setDescription("Save this\ntree");
+		startCalc.setDescription("Calculate\nthe likelihood\nof the trait");
+		addMem.setDescription("Add a new\nmember to\nthe tree");
+		try {
+			f.setIconImage(ImageIO.read(new File("Logo_Square.png")));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		f.addMouseWheelListener(this);
 		s.addMouseListener(this);
 		s.addMouseMotionListener(this);
-		f.setVisible(true);
-		menu.setLayout(new GridLayout(3, 1));
+		menu.setLayout(new GridLayout(4, 1));
+		menu.add(startCalc);
+		menu.add(save);
+		save.addActionListener(this);
 		menu.add(addMem);
-		f.setSize(500, 500);
-		f.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		searchBar.addActionListener(this);
 		menu.add(searchBar);
 		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		f.setLayout(new BorderLayout());
 		f.add(s, BorderLayout.CENTER);
 		f.add(menu, BorderLayout.EAST);
-		addMem.setMargin(new Insets(0, 0, 0, 0));
-		addMem.setBorder(null);
-		addMem.setBackground(null);
-		startCalc.setMargin(new Insets(0, 0, 0, 0));
-		startCalc.setBorder(null);
-		startCalc.setBorder(null);
+		f.setSize(500, 500);
+		f.setVisible(true);
 		startCalc.addActionListener(this);
-		menu.add(startCalc);
-		try {
-			Image img1 = ImageIO.read(new File("addMember.png"));
-			addMem.setIcon(new ImageIcon(img1));
-			Image img2 = ImageIO.read(new File("startCalculation.png"));
-			startCalc.setIcon(new ImageIcon(img2));
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
 		addMem.addActionListener(this);
-
+		addMem.setBackground(THEME_COLOR);
+		addMem.setForeground(Color.black);
+		startCalc.setForeground(Color.black);
+		save.setForeground(Color.black);
+		startCalc.setBackground(THEME_COLOR);
+		save.setBackground(THEME_COLOR);
+		
 	}
 	/*
 	 * public static void main(String[] args) { new Center();
@@ -185,10 +185,9 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 				}
 				// if left click and menu is popped up
 			} else if (e.getButton() == MouseEvent.BUTTON1 && !movable) {
-				// menu about a member is popped up
 				if (s.relmenu == null) {
 					int clicked = getClickedOption(x, y);
-					if (clicked == 5) {
+					if (clicked == 6) {
 						s.menu = null;
 						f.repaint();
 						movable = true;
@@ -211,10 +210,21 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 
 							m.Carrier = false;
 							break;
-						default:
-							// nothing
+						case 5:
+							s.members.remove(m);
+							for (int i = 0; i < s.lines.size(); i++) {
+								if(s.lines.get(i)[0].equals(m)||s.lines.get(i)[1].equals(m)){
+									s.lines.remove(i);
+									s.Relations.remove(i);
+								}
+							}
+							movable = true;
+							s.menu = null;
+							break;
 						}
+						if(s.menu!=null){
 						s.menu.linked = m;
+						}
 
 						f.repaint();
 
@@ -230,13 +240,21 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 						s.relmenu.Status = RelationMenu.DESCENDANT;
 						break;
 					case 3:
+						s.Relations.remove(findIndexOfMidpoint(s.lines,PP.x,PP.y));
+						s.lines.remove(findIndexOfMidpoint(s.lines,PP.x,PP.y));
+						s.relmenu = null;
+						movable = true;
+						f.repaint();
+						PP = new Point();
+						break;
+					case 4:
 						s.relmenu = null;
 						movable = true;
 						f.repaint();
 						PP = new Point();
 						break;
 					}
-					if (clicked != 3) {
+					if (clicked !=4 &&clicked!=3) {
 						s.Relations.set(findIndexOfMidpoint(s.lines, PP.x, PP.y), s.relmenu.Status);
 						f.repaint();
 
@@ -296,18 +314,18 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			if (y > s.relmenu.Y && y < s.relmenu.Y + Menu.HEIGHT) {
 				int offset = y - s.relmenu.Y;
 				offset = (int) Math.round(offset / RelationMenu.LINE_GAP);
-				if (offset > 2) {
-					return 2;
+				if (offset > 3) {
+					return 3;
 				} else if (offset <= 0) {
 					return 1;
 				} else {
 					return offset;
 				}
 			} else {
-				return 3;
+				return 4;
 			}
 		} else {
-			return 3;
+			return 4;
 		}
 
 	}
@@ -336,18 +354,18 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			if (y > s.menu.Y && y < s.menu.Y + Menu.HEIGHT) {
 				int offset = y - s.menu.Y;
 				offset = (int) Math.round(offset / Menu.LINE_GAP);
-				if (offset > 4) {
-					return 4;
+				if (offset > 5) {
+					return 5;
 				} else if (offset <= 0) {
 					return 1;
 				} else {
 					return offset;
 				}
 			} else {
-				return 5;
+				return 6;
 			}
 		} else {
-			return 5;
+			return 6;
 		}
 	}
 
@@ -367,17 +385,17 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 					PrintWriter write = new PrintWriter(DATA_OUTPUT_FILE);
 					write.print(familyTree);
 					write.close();
-					/*
-					 * Process p; try { p = Runtime.getRuntime().
-					 * exec("\"c:/program files/PedigreeAnalysis.exe\""); try {
-					 * p.waitFor(); Scanner fScan = new Scanner(new
-					 * File(DATA_OUTPUT_FILE)); 
-					 * String perc = fScan.nextLine();
-					 * searchBar.setText("The likelihood is " + perc);
-					 * fScan.close(); } catch (InterruptedException e1) {
-					 * e1.printStackTrace(); } } catch (IOException e1) {
-					 * e1.printStackTrace(); }
-					 */
+					 Process p; 
+					 try { 
+					p = Runtime.getRuntime().exec("\"C:/Program Files/Git/Pedigree-Analysis\""); 
+					try {
+					  p.waitFor(); 
+					  Scanner fScan = new Scanner(new File(DATA_OUTPUT_FILE)); 
+					  String perc = fScan.nextLine();
+					  searchBar.setText("The likelihood is " + perc);
+					 fScan.close(); } catch (InterruptedException e1) {
+					  e1.printStackTrace(); } } catch (IOException e1) {
+					  e1.printStackTrace(); }
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
 				}
@@ -400,14 +418,20 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 				e1.printStackTrace();
 			}
 		} else if (e.getSource().equals(save)) {
-			String name = JOptionPane.showInputDialog(f, "Input File Name", "ex. tree");
+			//String name = JOptionPane.showInputDialog(f, "Input File Name", "ex. tree");
+			JFileChooser choose = new JFileChooser();
+			String name = null;
+			int retVal = choose.showOpenDialog(f);
+			if(retVal == JFileChooser.APPROVE_OPTION){
+			name = choose.getSelectedFile().getAbsolutePath();
+			}
 			if (name != null) {
 				try {
 					save.setText("Saving...");
 					String output = buildStringFromTree();
 					if (output != null) {
 						output = output.substring(0, output.length() - 2);
-						PrintWriter write = new PrintWriter(new File(name + ".txt"));
+						PrintWriter write = new PrintWriter(new File(name + ".tree"));
 						write.print(output);
 						write.close();
 					}
@@ -432,7 +456,6 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		String ret = "";
 		ret += s.members.size() + "\r\n";
 		// ret+=getAllInts(searchBar.getText())+"\r\n";
-		// good^^
 		for (int i = 0; i < s.lines.size(); i++) {
 			if (s.Relations.get(i) == RelationMenu.MARRIED) {
 				s.lines.get(i)[0].Married.add(s.lines.get(i)[1]);
@@ -450,12 +473,12 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			}
 		}
 		setColumns();
+		if (s.Parents[0] == null || s.Parents[1] == null) {
+			JOptionPane.showMessageDialog(f, "Please select two parents by double clicking");
+			return null;
+		}
 		for (int i = 0; i < s.members.size(); i++) {
 			ret += s.members.get(i).Carrier ? "1\r\n" : "0\r\n";
-			if (s.Parents[0] == null || s.Parents[1] == null) {
-				JOptionPane.showMessageDialog(f, "Please select two parents by double clicking");
-				return null;
-			}
 			if (s.Parents[0].equals(s.members.get(i)) || s.Parents[1].equals(s.members.get(i))) {
 				ret += "1\r\n";
 			} else {
@@ -476,7 +499,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		}
 		return ret;
 	}
-
+/*
 	private String getAllInts(String text) {
 		String ret = "";
 		for (int i = 0; i < text.length(); i++) {
@@ -486,6 +509,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		}
 		return ret;
 	}
+	*/
 
 	public String getRow(Member mm) {
 		int ret = mm.relations(0, 0, s.members.size());
@@ -545,9 +569,8 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		int rolls = e.getWheelRotation();
 		double zoomPrevious = s.zoom;
 		double zoomSpeed = .05;
-		double moveSpeed = 7;
-		int xx = e.getX();
-		int yy = e.getY();
+		int xx = s.getWidth()/2;
+		int yy = s.getHeight()/2;
 		if (!e.isControlDown() && !e.isShiftDown()) {
 			if (rolls > 0) {
 
@@ -570,10 +593,8 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			if (zoomPrevious != s.zoom) {
 				for (int i = 0; i < s.members.size(); i++) {
 					Member m = s.members.get(i);
-					m.X += (int) Math.round(
-							(-rolls * zoomSpeed) * ((m.X + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2)) - xx));
-					m.Y += (int) Math.round(
-							(-rolls * zoomSpeed) * ((m.Y + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2)) - yy));
+					m.X += (int) Math.round((-rolls * zoomSpeed) * ((m.X + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2)) - xx));
+					m.Y += (int) Math.round((-rolls * zoomSpeed) * ((m.Y + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2)) - yy));
 				}
 			}
 		} else if (e.isControlDown()) {
