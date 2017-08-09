@@ -15,15 +15,23 @@ public class traitSearch {
 		int smallestDif = Integer.MAX_VALUE;
 		String closestMatch = "";
 		while (scan.hasNextLine()) {
-			String line = scan.nextLine().toLowerCase();
+			String lineNorm = scan.nextLine();
+			String line = lineNorm.toLowerCase();
 			int a;
 			if((a=keyDistance(line.trim(), searchStr.toLowerCase().trim()))<smallestDif){
-				closestMatch=line;
+				closestMatch=lineNorm;
 				smallestDif = a;
 			}
 		}
 		scan.close();
-		return smallestDif==0?closestMatch:"Assuming you meant\n"+closestMatch;
+		closestMatch = closestMatch.replaceAll("0", "Recessive Autosomal Trait");
+		closestMatch = closestMatch.replaceAll("1", "Dominant Autosomal Trait");
+		closestMatch = closestMatch.replaceAll("2", "Recessive X-Linked Trait");
+		closestMatch = closestMatch.replaceAll("3", "Dominant X-Linked Trait");
+		closestMatch = closestMatch.replaceAll("4", "Blendable Trait");
+		closestMatch = closestMatch.replaceAll("5", "Mutation");
+		closestMatch = closestMatch.replaceAll("6", "Not Inherited");
+		return smallestDif==0?closestMatch:"?"+closestMatch;
 	}
 
 	public static int keyDistance(String s1, String s2) {

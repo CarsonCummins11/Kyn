@@ -1,7 +1,6 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,16 +13,19 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.security.DigestInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
-
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class Center implements MouseListener, ActionListener, MouseMotionListener, MouseWheelListener {
 	// Defines all the wide scoped variables in the class
@@ -40,15 +42,42 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	Button startCalc = new Button("Calculate");
 	Member[] parents = new Member[2];
 	JTextField searchBar = new JTextField("Search for Traits		");
+	JTextArea outputBox = new JTextArea("Your results will appear here");
 	final static Color THEME_COLOR = new Color(103,173,110);
 	public static final String DATA_OUTPUT_FILE = "Chances.txt";
 	public static final String DATA_INPUT_FILE = "Ancestors.tree";
-
+	public static final boolean USE_JAVA_CALC = true;
+	JMenuBar bar = new JMenuBar();
+	JMenu fileActions = new JMenu("File");
+	JMenu editActions = new JMenu("Edit");
+	JMenu calcActions = new JMenu("Calculate");
+	JMenuItem calcSingleBranch = new JMenuItem("Single Branch");
+	JMenuItem calcMultBranch = new JMenuItem("Multiple Branches");
+	JMenuItem addMemberAction = new JMenuItem("Add Member");
+	JMenuItem saveFile = new JMenuItem("Save");
+	JMenuItem LoadFile = new JMenuItem("Load");
+	JMenuItem searchTraits = new JMenuItem("Search Traits");
 	public Center() {
+		calcActions.add(calcMultBranch);
+		calcActions.add(calcSingleBranch);
+		editActions.add(addMemberAction);
+		editActions.add(searchTraits);
+		fileActions.add(saveFile);
+		fileActions.add(LoadFile);
+		LoadFile.addActionListener(this);
+		calcMultBranch.addActionListener(this);
+		calcSingleBranch.addActionListener(this);
+		addMemberAction.addActionListener(this);
+		searchTraits.addActionListener(this);
+		saveFile.addActionListener(this);
+		bar.add(editActions);
+		bar.add(calcActions);
+		bar.add(fileActions);
+		f.setJMenuBar(bar);
 		// setting up the frame/general GUI
-		save.setDescription("Save this\ntree");
-		startCalc.setDescription("Calculate\nthe likelihood\nof the trait");
-		addMem.setDescription("Add a new\nmember to\nthe tree");
+		//save.setDescription("Save this\ntree");
+		//startCalc.setDescription("Calculate\nthe likelihood\nof the trait");
+		//addMem.setDescription("Add a new\nmember to\nthe tree");
 		try {
 			f.setIconImage(ImageIO.read(new File("Logo_Square.png")));
 		} catch (IOException e) {
@@ -57,27 +86,29 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		f.addMouseWheelListener(this);
 		s.addMouseListener(this);
 		s.addMouseMotionListener(this);
-		menu.setLayout(new GridLayout(4, 1));
-		menu.add(startCalc);
-		menu.add(save);
-		save.addActionListener(this);
-		menu.add(addMem);
-		searchBar.addActionListener(this);
-		menu.add(searchBar);
+		//menu.setLayout(new GridLayout(5, 1));
+		//menu.add(startCalc);
+		//menu.add(save);
+		//save.addActionListener(this);
+		//menu.add(addMem);
+		//searchBar.addActionListener(this);
+		//menu.add(searchBar);
+		//menu.add(outputBox);
 		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		f.setLayout(new BorderLayout());
 		f.add(s, BorderLayout.CENTER);
-		f.add(menu, BorderLayout.EAST);
+		//f.add(menu, BorderLayout.EAST);
 		f.setSize(500, 500);
 		f.setVisible(true);
-		startCalc.addActionListener(this);
-		addMem.addActionListener(this);
+		//startCalc.addActionListener(this);
+		/*addMem.addActionListener(this);
 		addMem.setBackground(THEME_COLOR);
 		addMem.setForeground(Color.black);
 		startCalc.setForeground(Color.black);
 		save.setForeground(Color.black);
 		startCalc.setBackground(THEME_COLOR);
 		save.setBackground(THEME_COLOR);
+		*/
 		
 
 	}
@@ -87,9 +118,22 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		s.members = mems;
 		s.Relations = rels;
 		s.lines = lins;
-		save.setDescription("Save this\ntree");
-		startCalc.setDescription("Calculate\nthe likelihood\nof the trait");
-		addMem.setDescription("Add a new\nmember to\nthe tree");
+		calcActions.add(calcMultBranch);
+		calcActions.add(calcSingleBranch);
+		editActions.add(addMemberAction);
+		fileActions.add(saveFile);
+		calcMultBranch.addActionListener(this);
+		calcSingleBranch.addActionListener(this);
+		addMemberAction.addActionListener(this);
+		saveFile.addActionListener(this);
+		bar.add(editActions);
+		bar.add(calcActions);
+		bar.add(fileActions);
+		f.setJMenuBar(bar);
+		// setting up the frame/general GUI
+		//save.setDescription("Save this\ntree");
+		//startCalc.setDescription("Calculate\nthe likelihood\nof the trait");
+		//addMem.setDescription("Add a new\nmember to\nthe tree");
 		try {
 			f.setIconImage(ImageIO.read(new File("Logo_Square.png")));
 		} catch (IOException e) {
@@ -98,28 +142,31 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		f.addMouseWheelListener(this);
 		s.addMouseListener(this);
 		s.addMouseMotionListener(this);
-		menu.setLayout(new GridLayout(4, 1));
-		menu.add(startCalc);
-		menu.add(save);
-		save.addActionListener(this);
-		menu.add(addMem);
-		searchBar.addActionListener(this);
-		menu.add(searchBar);
+		//menu.setLayout(new GridLayout(5, 1));
+		//menu.add(startCalc);
+		//menu.add(save);
+		//save.addActionListener(this);
+		//menu.add(addMem);
+		//searchBar.addActionListener(this);
+		//menu.add(searchBar);
+		//menu.add(outputBox);
 		f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		f.setLayout(new BorderLayout());
 		f.add(s, BorderLayout.CENTER);
-		f.add(menu, BorderLayout.EAST);
+		//f.add(menu, BorderLayout.EAST);
 		f.setSize(500, 500);
 		f.setVisible(true);
-		startCalc.addActionListener(this);
-		addMem.addActionListener(this);
+		//startCalc.addActionListener(this);
+		/*addMem.addActionListener(this);
 		addMem.setBackground(THEME_COLOR);
 		addMem.setForeground(Color.black);
 		startCalc.setForeground(Color.black);
 		save.setForeground(Color.black);
 		startCalc.setBackground(THEME_COLOR);
 		save.setBackground(THEME_COLOR);
+		*/
 		
+
 	}
 	/*
 	 * public static void main(String[] args) { new Center();
@@ -376,20 +423,24 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource().equals(addMem)) {
+		if (e.getSource().equals(addMem)||e.getSource().equals(addMemberAction)) {
 			Member mem = new Member(Member.MALE, false, 70, 0);
 			s.members.add(mem);
 			f.repaint();
-		} else if (e.getSource().equals(startCalc)) {
-			/*int[] xs = {s.Parents[0].X,s.Parents[1].X};
+		} else if (e.getSource().equals(startCalc)||e.getSource().equals(calcMultBranch)||e.getSource().equals(calcSingleBranch)) {
+			if(e.getSource().equals(calcMultBranch)){
+			int[] xs = {s.Parents[0].X,s.Parents[1].X};
 			int[] ys = {s.Parents[0].Y,s.Parents[1].Y};
 			System.out.println(xs[0]);
 			System.out.println(ys[0]);
 			System.out.println(xs[1]);
 			System.out.println(ys[1]);
 			double[] output =geneCalculator.calculateLikelihoods(s.lines, s.Relations, xs , ys);
-			searchBar.setText(Double.toString(output[0])+","+Double.toString(output[1])+","+Double.toString(output[2]));
-			*/
+			  JOptionPane.showMessageDialog(f,"The likelihood of not having the trait is " + Double.toString(output[0]));
+			  JOptionPane.showMessageDialog(f, "The likelihood of carrying the trait is"+ Double.toString(output[1]));
+			  JOptionPane.showMessageDialog(f,"The likelihood of showing the trait is"+Double.toString(output[2]));
+			
+			}else if(e.getSource().equals(calcSingleBranch)){
 			String familyTree = buildStringFromTree();
 			if (familyTree != null) {
 				try {					
@@ -399,7 +450,6 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 					 Process p; 
 					 try { 
 					p = Runtime.getRuntime().exec("PedigreeAnalysis.exe"); 
-					System.out.println("yo");
 					try {
 					  p.waitFor(); 
 					  Scanner fScan = new Scanner(new File(DATA_OUTPUT_FILE)); 
@@ -407,11 +457,14 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 					 String two = fScan.nextLine();
 					 String three = fScan.nextLine();
 					 if(getAllInts(one).length()>0&&getAllInts(two).length()>0&&getAllInts(three).length()>0){
-					  searchBar.setText("The likelihood of not having the disease is " + Double.parseDouble(one)+"\r\n");
-					  searchBar.setText("The likelihood of carrying the disease is"+ Double.parseDouble(two)+"\r\n");
-					  searchBar.setText("The likelihood of showing the disease is"+Double.parseDouble(three));
+					  JOptionPane.showMessageDialog(f,"The likelihood of not having the trait is " + Double.parseDouble(one) );
+					  JOptionPane.showMessageDialog(f, "The likelihood of carrying the trait is"+ Double.parseDouble(two));
+					  JOptionPane.showMessageDialog(f,"The likelihood of showing the trait is"+Double.parseDouble(three) );
+						 //outputBox.setText("The likelihood of not having the trait is " + Double.parseDouble(one)+"\r\n");
+					  //outputBox.setText(outputBox.getText()+"The likelihood of carrying the trait is"+ Double.parseDouble(two)+"\r\n");
+					  //outputBox.setText(outputBox.getText()+"The likelihood of showing the trait is"+Double.parseDouble(three));
 					 }else{
-						 searchBar.setText("We don't know how to do trees like that right now");
+						 JOptionPane.showMessageDialog(f,"No record of trait, or it was spelled incorrectly");
 					 }
 					 fScan.close(); 
 					 } catch (InterruptedException e1) {
@@ -423,9 +476,9 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
 				}
-
 			} else {
 				return;
+			}
 			}
 		
 		} else if (e.getSource().equals(searchBar)) {
@@ -434,15 +487,27 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 				if (str != null) {
 					searchBar.setText(str);
 				} else {
-					searchBar.setText("No record of trait, or it was spelled incorrectly");
-					f.setSize(f.getSize().width + 1, f.getSize().height);
-					f.setSize(f.getSize().width - 1, f.getSize().height);
+					JOptionPane.showMessageDialog(f,"No record of trait, or it was spelled incorrectly");
+					
 				}
 			} catch (FileNotFoundException e1) {
 
 				e1.printStackTrace();
 			}
-		} else if (e.getSource().equals(save)) {
+		}else if(e.getSource().equals(searchTraits)){
+			String term = JOptionPane.showInputDialog(f,"Search for traits", "ex. Red Hair");
+			try {
+				String str = traitSearch.searchFile(traitSearch.TRAITS_FILE, term);
+				if(str!=null){
+					f.setTitle("Tree Builder For "+str);
+				}else{
+					f.setTitle("Tree Builder"+"Gene not found");
+				}
+			} catch (FileNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}else if (e.getSource().equals(save)||e.getSource().equals(saveFile)) {
 			//String name = JOptionPane.showInputDialog(f, "Input File Name", "ex. tree");
 			JFileChooser choose = new JFileChooser();
 			String name = null;
@@ -468,10 +533,151 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 				JOptionPane.showMessageDialog(f,"Please enter a name");
 			}
 
+		}else if(e.getSource().equals(LoadFile)){
+			String data = "";
+			JFileChooser choose = new JFileChooser();
+			choose.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("Tree Files (.tree)", "tree");
+			choose.setFileFilter(filter);
+			int retVal = choose.showOpenDialog(f);
+			if(retVal == JFileChooser.APPROVE_OPTION){
+				File ff = choose.getSelectedFile();
+				try {
+					Scanner fRead = new Scanner(ff);
+					while(fRead.hasNextLine()){
+						data+=fRead.nextLine()+"\n";
+					}
+					fRead.close();
+				} catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
+			}else{
+				return;
+			}
+			if(introPage.isLegalFormat(data)){
+			ArrayList<Member> mm= getMembers(data);
+			new Center(mm,getRels(mm), getLines(mm) );
+			}else{
+				JOptionPane.showMessageDialog(f, "Not the correct file format");
+			}
 		}
 
 	}
+	public ArrayList<Member[]> getLines(ArrayList<Member> mm) {
+		ArrayList<Member[]> ret = new ArrayList<Member[]>();
+		for (int i = 0; i < mm.size(); i++) {
+	for (int j = 0; j < mm.get(i).Parents.size(); j++) {
+		Member[] temp = {mm.get(i),mm.get(i).Parents.get(j)};
+		ret.add(temp);
+	}
+	for (int j = 0; j < mm.get(i).Married.size(); j++) {
+		Member[] temp = {mm.get(i),mm.get(i).Married.get(j)};
+		ret.add(temp);
+	}
+}
+		return ret;
+	}
 
+	public ArrayList<Integer> getRels(ArrayList<Member> mm) {
+		ArrayList<Integer> ret = new ArrayList<Integer>();
+		for (int i = 0; i < mm.size(); i++) {
+	for (int j = 0; j < mm.get(i).Parents.size(); j++) {
+		ret.add(RelationMenu.DESCENDANT);
+	}
+	for (int j = 0; j < mm.get(i).Married.size(); j++) {
+		ret.add(RelationMenu.MARRIED);
+	}
+	
+}
+		return ret;
+	}
+	public  int inMyGen(ArrayList<Member> mems, int row) {
+		int ret = 0;
+			for (int i = 0; i < mems.size(); i++) {
+			if(mems.get(i).row==row){
+				ret++;
+			}
+		}
+			return ret;
+		}
+
+		public int totalGens(ArrayList<Member> mems) {
+			ArrayList<Integer> used = new ArrayList<Integer>();
+			used.add(0);
+			for (int i = 0; i < mems.size(); i++) {
+				if(!used.contains(mems.get(i).row)){
+					used.add(mems.get(i).row);
+				}
+			}
+			return used.size();
+		}
+
+		public Member getMemberByRowColumn(ArrayList<Member> members,int row, int column){
+			for (int i = 0; i < members.size(); i++) {
+				if(members.get(i).column==column&&members.get(i).row==row){
+					return members.get(i);
+				}
+			}
+			return null;
+		}
+		public static ArrayList<Integer> intListToArrayList(String data){
+			ArrayList<Integer> lines = new ArrayList<Integer>();
+			String cur = "";
+			for (int i = 0; i < data.length(); i++) {
+				if(data.charAt(i)!='\n'&&data.charAt(i)!='\r'){
+					cur+=data.charAt(i);
+				}else if(!cur.equals("")){
+					lines.add(Integer.parseInt(cur));
+					cur = "";
+				}
+			}
+			return lines;
+		}
+	public ArrayList<Member> getMembers(String data){
+		ArrayList<Integer> lines = intListToArrayList(data);
+		lines.remove(0);
+		ArrayList<Member> ret = new ArrayList<Member>();
+		int startIndex = 0;
+		while(true){
+		Member temp = new Member(0,false,0,0);
+		temp.Carrier = lines.get(startIndex)==0?false:true;
+		temp.row = lines.get(startIndex+3);
+		temp.column = lines.get(startIndex+4);
+		if(lines.get(startIndex+2)==1){
+			Integer[] tempArray1 = {lines.get(startIndex+5),lines.get(startIndex+6)};
+			temp.ParentCoordinates.add(tempArray1);
+			Integer[] tempArray2 = {lines.get(startIndex+7),lines.get(startIndex+8)};
+			temp.ParentCoordinates.add(tempArray2);
+			
+		}
+			startIndex+=lines.get(startIndex+2)==1?9:5;
+			ret.add(temp);
+			if(startIndex>=lines.size()){
+				break;
+			}
+		}
+		for (int i = 0; i < ret.size(); i++) {
+			ret.get(i).X = ret.get(i).column*(1000/inMyGen(ret,ret.get(i).row));
+			ret.get(i).Y = ret.get(i).row*(1000/totalGens(ret));
+			Member mm = ret.get(i);
+			for (int j = 0; j < mm.ParentCoordinates.size(); j++) {
+				mm.Parents.add(getMemberByRowColumn(ret,mm.ParentCoordinates.get(j)[0],mm.ParentCoordinates.get(j)[1]));
+			}
+		}
+		for (int i = 0; i < ret.size(); i++) {
+			Member mm = ret.get(i);
+			for (int j = 0; j < mm.Parents.size(); j++) {
+				mm.Parents.get(j).Children.add(mm);
+				for (int k = 0; k < mm.Parents.size(); k++) {
+					if(!mm.Parents.get(j).equals(mm.Parents.get(k))){
+						mm.Parents.get(j).Married.add(mm.Parents.get(k));
+					}
+				}
+			}
+		}
+		return ret;
+		
+	}
 	public String buildStringFromTree() {
 		if (s.members.size() < 2 || s.lines.size() < 1) {
 			JOptionPane.showMessageDialog(f, "Please add at least two members with at least one connection");

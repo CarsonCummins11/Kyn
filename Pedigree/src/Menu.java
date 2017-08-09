@@ -21,8 +21,8 @@ public class Menu {
 		g.setColor(Color.BLACK);
 		g.drawString("Male " + (linked.Gender == Member.MALE ? "<" : ""), X, Y + LINE_GAP);
 		g.drawString("Female " + (linked.Gender == Member.FEMALE ? "<" : ""), X, Y + 2 * LINE_GAP);
-		g.drawString("Diseased " + (linked.Carrier ? "<" : ""), X, Y + 3 * LINE_GAP);
-		g.drawString("Non-Diseased " + (linked.Carrier ? "" : "<"), X, Y + 4 * LINE_GAP);
+		g.drawString("Trait " + (linked.Carrier ? "<" : ""), X, Y + 3 * LINE_GAP);
+		g.drawString("No Trait " + (linked.Carrier ? "" : "<"), X, Y + 4 * LINE_GAP);
 		g.drawString("Delete", X,Y+5*LINE_GAP );
 
 	}

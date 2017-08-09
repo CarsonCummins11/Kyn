@@ -35,11 +35,11 @@ Red-Green Colorblind: 2
 3-hydroxyacyl-CoA dehydrogenase deficiency: 0
 Abetalipoproteinemia: 0
 Adiposis dolorosa: 1
-*Achondroplasia: 20% 1, 80% 5
+*Achondroplasia: twenty percent 1, eighty percent 5
 Albinism: 0
 Alkaptonuria: 0
 Alpha Thalassemia: 0
-*Amyotrophic lateral sclerosis: 10% 1, 90% 5
+*Amyotrophic lateral sclerosis: ten percent 1, ninety percent 5
 Angelman Syndrome: 6
 Ataxia-Telangiectasia: 0
 Bardet-Biedl Syndrome: 0
@@ -87,7 +87,7 @@ Hemophilia B: 2
 Hemophagocytic lymphohistiocytosis: 0
 Hereditary fructose intolerance: 0
 Hereditary hemorrhagic telangiectasia: 1
-*Hereditary spherocytosis: 75% 1, 25% 0
+*Hereditary spherocytosis: seventy five percent 1, twenty five percent 0
 Holoprosencephaly: 1
 Holt-Oram syndrome: 1
 Homocystinuria: 0
@@ -107,7 +107,7 @@ Lesch-Nyhan Syndrome: 2
 Lynch syndrome: 1
 Lysosomal acid lipase deficiency: 0
 Maple syrup urine disease: 0
-*Marfan syndrome: 75% 1, 25% 5
+*Marfan syndrome: seventy five percent 1, twenty five percent 5
 McArdle's Disease: 0
 Menkes disease: 2
 Metachromatic leukodystrophy: 0
@@ -140,7 +140,7 @@ Spondyloepiphyseal dysplasia congenita: 1
 Tay-Sachs disease: 0
 Trimethylaminuria: 0
 Triple X syndrome: 6
-*Tuberous sclerosis complex: 33% 1, 66% 5
+*Tuberous sclerosis complex: thirty three percent 1, sixty seven percent 5
 Turner's Syndrome: 6
 Tyrosinemia 1: 0
 Usher Syndrome: 0

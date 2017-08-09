@@ -48,8 +48,6 @@ public class geneCalculator {
 		for (int k = 0; k < members.size(); k++) {
 		for (int i = 0; i < members.size(); i++) {
 			for (int j = 0; j < members.get(i).Married.size(); j++) {
-				members.get(i).affectedChance =  affectedChance(members.get(i).Married.get(j),members.get(i));
-				members.get(i).notAffectedChance =  notAffectedChance(members.get(i).Married.get(j),members.get(i));
 				members.get(i).carrierChance =  carrierChance(members.get(i).Married.get(j),members.get(i));
 				
 			}
@@ -65,27 +63,24 @@ public class geneCalculator {
 				}
 			}
 		}
-		double[] ret = {notAffectedChance(pars[0],pars[1]),carrierChance(pars[0],pars[1]),affectedChance(pars[0],pars[1])};
+		double[] ret = {notAffectedChance(pars[0],pars[1]),affectedChance(pars[0],pars[1]),carrierChance(pars[0],pars[1])};
 		return ret;
 	}
 	private static double carrierChance(Member m1, Member m2) {
 		if(m1.Parents.size()>0&&m2.Parents.size()>0){
 			double carrierChance = 1.0;
-				carrierChance = carrierChance*m1.Parents.get(0).carrierChance;
-				for (int j = 1; j < m1.Parents.size(); j++) {
+				for (int j = 0; j < m1.Parents.size(); j++) {
 				double carrierChance22 = (m1.Parents.get(j).carrierChance);
 				carrierChance= carrierChance22*carrierChance;
 				}
-				carrierChance = carrierChance*m2.Parents.get(0).carrierChance;
-				for (int j = 1; j < m2.Parents.size(); j++) {
+				for (int j = 0; j < m2.Parents.size(); j++) {
 				double carrierChance22 = (m2.Parents.get(j).carrierChance);
 				carrierChance= carrierChance22*carrierChance;
 				}
 			return carrierChance;
 		}else if(m1.Parents.size()>0){
 			double carrierChance = 1.0;
-			carrierChance = carrierChance*m1.Parents.get(0).carrierChance;
-			for (int j = 1; j < m1.Parents.size(); j++) {
+			for (int j = 0; j < m1.Parents.size(); j++) {
 			double carrierChance22 = (m1.Parents.get(j).carrierChance);
 			carrierChance= carrierChance22*carrierChance;
 			}
@@ -104,7 +99,6 @@ public class geneCalculator {
 			}
 		}else if(m2.Parents.size()>0){
 			double carrierChance = 1.0;
-			carrierChance = carrierChance*m2.Parents.get(0).carrierChance;
 			for (int j = 0; j < m2.Parents.size(); j++) {
 			double carrierChance22 = (m2.Parents.get(j).carrierChance);
 			carrierChance= carrierChance22*carrierChance;
@@ -141,8 +135,10 @@ public class geneCalculator {
 	private static double affectedChance(Member m1, Member m2) {
 		if(m1.Carrier&&m2.Carrier){
 			return 1.0;
-		}else if(m1.Carrier&&!m2.Carrier||!m1.Carrier&&m2.Carrier){
-			return 0.5;
+		}else if(m1.Carrier&&!m2.Carrier){
+			return 0.5*m2.carrierChance;
+		}else if(!m1.Carrier&&m2.Carrier){
+			return .5*m1.carrierChance;
 		}else{
 			return .25*carrierChance(m1,m2);
 		}
