@@ -90,10 +90,14 @@ JLabel header = new JLabel();
 		}
 		
 	}
-	public boolean isLegalFormat(String data) {
+	public static boolean isLegalFormat(String data) {
+		if(data.length()==0){
+			return false;
+		}
 		for (int i = 0; i < data.length(); i++) {
-			if(!Character.isDigit(data.charAt(i))&&data.charAt(i)!='\n'){
-				System.out.println("Broken because input contains a non-digit character");
+			if(!Character.isDigit(data.charAt(i))&&data.charAt(i)!='\n'&&data.charAt(i)!='\r'){
+				System.out.println("Broken because input contains a non-digit character at"+i);
+				System.out.println(data);
 				return false;
 			}
 		
@@ -103,7 +107,7 @@ JLabel header = new JLabel();
 		int startIndex = 0;
 		while(true){
 			if(lines.get(startIndex+2)>1||lines.get(startIndex+1)>1||lines.get(startIndex)>1){
-
+//System.out.println((lines.get(startIndex+2)>1?"Problem with has_parents":"")+(lines.get(startIndex+1)>1?"Problem with is_parent":"")+(lines.get(startIndex)>1?"Problem with is_carrier":"")+" on line "+startIndex);
 				return false;
 			}
 			startIndex+=lines.get(startIndex+2)==1?9:5;
@@ -116,14 +120,13 @@ JLabel header = new JLabel();
 		
 	}
 
-//Good
-public ArrayList<Integer> intListToArrayList(String data){
+public static ArrayList<Integer> intListToArrayList(String data){
 	ArrayList<Integer> lines = new ArrayList<Integer>();
 	String cur = "";
 	for (int i = 0; i < data.length(); i++) {
-		if(data.charAt(i)!='\n'){
+		if(data.charAt(i)!='\n'&&data.charAt(i)!='\r'){
 			cur+=data.charAt(i);
-		}else{
+		}else if(!cur.equals("")){
 			lines.add(Integer.parseInt(cur));
 			cur = "";
 		}

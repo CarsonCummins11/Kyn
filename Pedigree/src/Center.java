@@ -14,7 +14,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.DigestInputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Scanner;
 
 import javax.imageio.ImageIO;
@@ -39,7 +41,8 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	Member[] parents = new Member[2];
 	JTextField searchBar = new JTextField("Search for Traits		");
 	final static Color THEME_COLOR = new Color(103,173,110);
-	public static final String DATA_OUTPUT_FILE = "Ancestors.tree";
+	public static final String DATA_OUTPUT_FILE = "Chances.txt";
+	public static final String DATA_INPUT_FILE = "Ancestors.tree";
 
 	public Center() {
 		// setting up the frame/general GUI
@@ -157,7 +160,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		int y = e.getY();
 		if (e.getClickCount() < 2) {
 			// if left click and no menu
-			if (e.getButton() == MouseEvent.BUTTON1 && movable) {
+			if (e.getButton() == MouseEvent.BUTTON1 && movable &&!e.isAltDown()) {
 				if (m == null) {
 					m = getClicked(x, y);
 
@@ -184,7 +187,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 					}
 				}
 				// if left click and menu is popped up
-			} else if (e.getButton() == MouseEvent.BUTTON1 && !movable) {
+			} else if (e.getButton() == MouseEvent.BUTTON1 && !movable && !e.isAltDown()) {
 				if (s.relmenu == null) {
 					int clicked = getClickedOption(x, y);
 					if (clicked == 6) {
@@ -261,7 +264,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 					}
 				}
 				// If there you click on the second button, the middle button
-			} else if (e.getButton() == MouseEvent.BUTTON2) {
+			} else if (e.getButton() == MouseEvent.BUTTON2||(e.getButton()== MouseEvent.BUTTON1&&e.isAltDown())) {
 				// If the click is on an object
 				if (getClicked(x, y) != null) {
 					if (strt != null) {
@@ -278,7 +281,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			}
 		} else {
 			// make a line in between
-			if (e.getButton() == MouseEvent.BUTTON1) {
+			if (e.getButton() == MouseEvent.BUTTON1&&!e.isAltDown()) {
 				if (getClicked(x, y) != null && (!getClicked(x, y).equals(parents[0]))
 						&& (!getClicked(x, y).equals(parents[1]))) {
 					if (parents[0] == null) {
@@ -378,24 +381,45 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			s.members.add(mem);
 			f.repaint();
 		} else if (e.getSource().equals(startCalc)) {
+			/*int[] xs = {s.Parents[0].X,s.Parents[1].X};
+			int[] ys = {s.Parents[0].Y,s.Parents[1].Y};
+			System.out.println(xs[0]);
+			System.out.println(ys[0]);
+			System.out.println(xs[1]);
+			System.out.println(ys[1]);
+			double[] output =geneCalculator.calculateLikelihoods(s.lines, s.Relations, xs , ys);
+			searchBar.setText(Double.toString(output[0])+","+Double.toString(output[1])+","+Double.toString(output[2]));
+			*/
 			String familyTree = buildStringFromTree();
 			if (familyTree != null) {
-				try {
-					familyTree = familyTree.substring(0,familyTree.length() - 2);
-					PrintWriter write = new PrintWriter(DATA_OUTPUT_FILE);
+				try {					
+					PrintWriter write = new PrintWriter(DATA_INPUT_FILE);
 					write.print(familyTree);
 					write.close();
 					 Process p; 
 					 try { 
-					p = Runtime.getRuntime().exec("\"C:/Program Files/Git/Pedigree-Analysis\""); 
+					p = Runtime.getRuntime().exec("PedigreeAnalysis.exe"); 
+					System.out.println("yo");
 					try {
 					  p.waitFor(); 
 					  Scanner fScan = new Scanner(new File(DATA_OUTPUT_FILE)); 
-					  String perc = fScan.nextLine();
-					  searchBar.setText("The likelihood is " + perc);
-					 fScan.close(); } catch (InterruptedException e1) {
-					  e1.printStackTrace(); } } catch (IOException e1) {
-					  e1.printStackTrace(); }
+					 String one = fScan.nextLine();
+					 String two = fScan.nextLine();
+					 String three = fScan.nextLine();
+					 if(getAllInts(one).length()>0&&getAllInts(two).length()>0&&getAllInts(three).length()>0){
+					  searchBar.setText("The likelihood of not having the disease is " + Double.parseDouble(one)+"\r\n");
+					  searchBar.setText("The likelihood of carrying the disease is"+ Double.parseDouble(two)+"\r\n");
+					  searchBar.setText("The likelihood of showing the disease is"+Double.parseDouble(three));
+					 }else{
+						 searchBar.setText("We don't know how to do trees like that right now");
+					 }
+					 fScan.close(); 
+					 } catch (InterruptedException e1) {
+					  e1.printStackTrace(); 
+					  } 
+					} catch (IOException e1) {
+					  e1.printStackTrace(); 
+					  }
 				} catch (FileNotFoundException e1) {
 					e1.printStackTrace();
 				}
@@ -403,6 +427,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			} else {
 				return;
 			}
+		
 		} else if (e.getSource().equals(searchBar)) {
 			try {
 				String str = traitSearch.searchFile(traitSearch.TRAITS_FILE, searchBar.getText());
@@ -430,7 +455,6 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 					save.setText("Saving...");
 					String output = buildStringFromTree();
 					if (output != null) {
-						output = output.substring(0, output.length() - 2);
 						PrintWriter write = new PrintWriter(new File(name + ".tree"));
 						write.print(output);
 						write.close();
@@ -454,21 +478,36 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			return null;
 		}
 		String ret = "";
-		ret += s.members.size() + "\r\n";
-		// ret+=getAllInts(searchBar.getText())+"\r\n";
+		//ret+=getAllInts(searchBar.getText())+"\r\n";
+		while(!introPage.isLegalFormat(ret)){
+			Collections.shuffle(s.members);
+			ret="";
+			ret += s.members.size() + "\r\n";
 		for (int i = 0; i < s.lines.size(); i++) {
 			if (s.Relations.get(i) == RelationMenu.MARRIED) {
+				if(!s.lines.get(i)[0].Married.contains(s.lines.get(i)[1])){
 				s.lines.get(i)[0].Married.add(s.lines.get(i)[1]);
+				}
+				if(!s.lines.get(i)[1].Married.contains(s.lines.get(i)[0])){
 				s.lines.get(i)[1].Married.add(s.lines.get(i)[0]);
+				}
 			} else {
 				Member P1 = s.lines.get(i)[0];
 				Member P2 = s.lines.get(i)[1];
 				if (P1.Y > P2.Y) {
+					if(!P1.Parents.contains(P2)){
 					P1.Parents.add(P2);
+					}
+					if(!P2.Children.contains(P1)){
 					P2.Children.add(P1);
+					}
 				} else {
+					if(!P2.Parents.contains(P1)){
 					P2.Parents.add(P1);
+					}
+					if(!P1.Children.contains(P2)){
 					P1.Children.add(P2);
+					}
 				}
 			}
 		}
@@ -491,15 +530,17 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			}
 			ret += getRow(s.members.get(i)) + "\r\n";
 			ret += s.members.get(i).column + "\r\n";
+
 			for (int j = 0; j < s.members.get(i).Parents.size(); j++) {
 				ret += getRow(s.members.get(i).Parents.get(j)) + "\r\n";
 				ret += s.members.get(i).Parents.get(j).column + "\r\n";
 			}
 
 		}
+		ret = ret.substring(0, ret.length()-2);
+		}
 		return ret;
 	}
-/*
 	private String getAllInts(String text) {
 		String ret = "";
 		for (int i = 0; i < text.length(); i++) {
@@ -509,11 +550,10 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		}
 		return ret;
 	}
-	*/
+
 
 	public String getRow(Member mm) {
 		int ret = mm.relations(0, 0, s.members.size());
-
 		return Integer.toString(ret);
 	}
 
