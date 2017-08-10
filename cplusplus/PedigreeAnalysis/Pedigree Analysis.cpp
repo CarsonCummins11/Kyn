@@ -6,6 +6,11 @@ void ancestors::load_tree(person& mystery){
     ifstream ancestry("ancestors.tree");
     vector<int> anAncestor;
 
+    if (!ancestry.is_open())
+    {
+        cout << "File not working like it's purpose is!" << endl;
+    }
+
     // read in # of ancestors
     ancestry >> num_ancestor;
 
@@ -19,15 +24,12 @@ void ancestors::load_tree(person& mystery){
 
     vect_to_persons(mystery);
 
-    display_tree();
+    //display_tree();
 }
 
 
 void ancestors::read_ancestry(ifstream & ancestry, vector<int>  & anAncestor)
 {
-    /*ancestry >> trait_type;
-    anAncestor.push_back(trait_type);*/
-
 	ancestry >> is_carrier;
 	anAncestor.push_back(is_carrier);
 
@@ -88,28 +90,6 @@ void ancestors::vect_to_persons(person& mystery)
         temp_person.parent2Gen = family_tree[ii][8];
         people.push_back(temp_person);
     }
-    mystery.parent1Gen = -1;
-
-    // calculates the mystery child's generation and child number, parent's generations and parent's child numbers
-    for (int ii = 0; ii < people.size(); ++ii)
-    {
-        if (people[ii].is_parent == true)
-        {
-            if (mystery.parent1Gen == -1)
-            {
-                mystery.parent1Gen = people[ii].generation;
-                mystery.parent1No = people[ii].parent1No;
-            }
-            else
-            {
-                mystery.parent2Gen = people[ii].generation;
-                mystery.parent2No = people[ii].parent2No;
-            }
-        }
-    }
-
-    mystery.generation = mystery.parent1Gen - 1;
-    mystery.childNo = -1;
 
     // Insertion Sort
 
@@ -156,9 +136,42 @@ void ancestors::vect_to_persons(person& mystery)
             }
         }
     }
+
+
+    mystery.parent1Gen = -1;
+
+    // calculates the mystery child's generation and child number, parent's generations and parent's child numbers
+    for (int ii = 0; ii < people.size(); ++ii)
+    {
+        if (people[ii].is_parent == true)
+        {
+            if (mystery.parent1Gen == -1)
+            {
+                mystery.parent1Gen = people[ii].generation;
+                mystery.parent1No = people[ii].childNo;
+            }
+            else
+            {
+                mystery.parent2Gen = people[ii].generation;
+                mystery.parent2No = people[ii].childNo;
+            }
+        }
+    }
+
+    mystery.generation = mystery.parent1Gen + 1;
+    mystery.childNo = -1;
+    //cout << mystery.generation << endl;
+    //cout << mystery.parent1Gen << endl;
+    //cout << mystery.parent1No << endl;
+    //cout << mystery.parent2Gen << endl;
+    //cout << mystery.parent2No << endl;
 }
 
-probability ancestors::goingDownProbability (person childrenArray [], int arrayLength, string p1Genotype, bool p2Phenotype) {
+
+probability ancestors::goingDownProbability (person childrenArray [], int arrayLength, string p1Genotype, bool p2Affected)
+{
+//    for (int i = 0; i <arrayLength; i++) //cout << childrenArray[i].genotype<< " ";
+    //cout << endl;
     probability child1;
     child1.RR = 0;
     child1.Rr = 0;
@@ -166,18 +179,18 @@ probability ancestors::goingDownProbability (person childrenArray [], int arrayL
     bool OK = false;
     bool disease = false;
     for (int i = 0; i<arrayLength; i++) {
-       // cout << "GOINGTHROUGH CHILDARRAY " << childrenArray [i].genotype << endl;
+//        //cout << "GOINGTHROUGH CHILDARRAY " << childrenArray [i].genotype << endl;
         if (childrenArray [i].affected == false) {
             OK = true;
-
         }
-
-        if (childrenArray [i].affected == true) {
+        else {
+            //cout << "why me shouldn't work" << endl;
             disease = true;
         }
     }
-  //  cout << "OK: " << OK << " disease: " << disease << endl;
-    if (p2Phenotype == true) {
+    //cout << "OK: " << OK << " disease: " << disease << endl;
+    bool p2RR = (disease == false) & (OK == true);
+    if (p2Affected == true) {
         if (p1Genotype == "RR" && disease == false && OK == true){
             //RRrr
             child1.Rr += 4;
@@ -196,41 +209,54 @@ probability ancestors::goingDownProbability (person childrenArray [], int arrayL
         //do it assuming adult is RR/Rr
         if (p1Genotype == "RR") {
 
-
             if (OK == true && disease == false) {
                 //RRRR
+                if (OK == true) {
                 child1.RR += 4;
-
-                //RrRR
+                //cout << "RRRR2" << endl;
+                }
+                else {
+                //RRRr
                 child1.RR += 2;
+                //cout << "RRRr2" << endl;
+                }
             }
+
         }
         else if (p1Genotype == "Rr") {
-            if (OK == true && disease == false) {
+            if (p2RR) {
                 //RrRR
                 child1.RR += 2;
                 child1.Rr += 2;
+                //cout << "RrRR2" << endl;
             }
-
+            else {
             //RrRr
             child1.RR += 1;
             child1.Rr += 2;
             child1.rr += 1;
+                //cout << "RrRr2" << endl;
+            }
+            //cout << child1.RR<< " here39 " << child1.Rr << endl;
 
         }
         else if (p1Genotype == "rr") {
-            if (OK == true && disease == false){
+            if (p2RR){
             //rrRR
             child1.Rr += 4;
+                //cout << "rrRR2" << endl;
             }
-
+            else {
             //rrRr
-            child1.Rr += 2;
+                child1.Rr += 2;
+                child1.rr += 2;
+                //cout << "rrRr2" << endl;
+            }
         }
     }
-    // cout << "GOINGDoWNRESULTS " << child1.RR << endl;
-    // cout << "GOINGDoWNRESULTS " << child1.Rr << endl;
-    // cout << "GOINGDoWNRESULTS " << child1.rr << endl;
+    //cout << "GOINGDoWNRESULTS " << child1.RR << endl;
+    //cout << "GOINGDoWNRESULTS " << child1.Rr << endl;
+    //cout << "GOINGDoWNRESULTS " << child1.rr << endl;
     return child1;
 }
 
@@ -243,23 +269,30 @@ probability ancestors::goingUpProbability (int childNo, person childrenArray [],
     parent1.Rr =0;
     parent1.rr =0;
     for (int i = 0; i<childNo; i++) {
-
+//        //cout << "childArray" << childrenArray [i].genotype<<endl;
         if (childrenArray [i].affected == false) {
             OK = true;
-         //  cout << "hi" <<childrenArray[i].genotype << endl;
+          //cout << "hi" << endl;
         }
 
         if (childrenArray [i].affected == true) {
             disease = true;
+            //cout << "HI2 " << endl;
         }
     }
+
     if (OK == true && disease == false) {
+
         //RRRR
         if (KnownGenotype != "Rr" && parent1affected == false && parent2affected == false) {
             parent1.RR += 1;
+            //cout << "RRRR" << endl;
         }
         //RRRr
-        if (parent1affected == false && parent2affected == false) parent1.RR += 1;
+        if (parent1affected == false && parent2affected == false) {
+            parent1.RR += 1;
+            //cout << "RRRr"<<endl;
+        }
 
         //RRrr
         if (KnownGenotype == "Rr" && parent1affected == false && parent2affected == true) parent1.RR += 1;
@@ -293,7 +326,7 @@ probability ancestors::goingUpProbability (int childNo, person childrenArray [],
         //RrRr
         if (parent1affected == false && parent2affected == false) {
             parent1.Rr += 1;
-          //  cout << "RrRr" << endl;
+          //  //cout << "RrRr" << endl;
         }
 
         //Rrrr
@@ -311,59 +344,64 @@ probability ancestors::goingUpProbability (int childNo, person childrenArray [],
         //rrRr
         if (parent1affected == true && parent2affected == false) {
            parent1.rr += 1;
-           //cout<<"rrRr" << endl;
+            //cout<<"rrRr" << endl;
         }
         //rrrr
         if (KnownGenotype == "rr" && parent1affected == true && parent2affected == true) {
             parent1.rr += 1;
-            //cout << "rrrr"<<endl;
+            //cout << "WE ARE HERE rrrr"<<endl;
         }
     }
     return parent1;
 }
 
-person ancestors::findCommonPoint (person disease, person mystery, person* diseaseUp, person* mysteryUp, int&mysteryUpCount) {
+person ancestors::findCommonPoint (person disease, person mystery, person* diseaseUp, person* mysteryUp, int&mysteryUpCount, int& mysteryCommonIndex)
+{
     //do if both need to go up
     int diseaseUpCount = 1;
     diseaseUp [0] = disease;
     mysteryUp [0] = mystery;
- //   cout << diseaseUp[0].genotype << endl;
+//    //cout << "Mysterygenotype" <<  mystery.genotype << endl;
+ //   //cout << diseaseUp[0].genotype << endl;
 
     bool stop = false;
      mysteryUpCount = 1;
 
 
     //now find diseaseUp
-    for (int i = 1; i < num_ancestor; i++) {
+    for (int i = 0; i < num_ancestor; i++) {
         if (stop == true) {
             break;
         }
         for (int j = 0; j < num_ancestor; j++) {
-            if (people [i].generation == 0) {
+            if (people [i].generation == 0 && diseaseUp [diseaseUpCount - 1].generation != 0) {
                 stop = true;
                 diseaseUp [diseaseUpCount] = people[i];
                 diseaseUpCount ++;
                 break;
             }
-            if (people [j].follow == true && people [j].generation == disease.parent1Gen && people [j].childNo == disease.parent1No) {
-                diseaseUp [i] = people [j];
+            if (people [j].follow == true && people [j].generation == diseaseUp[diseaseUpCount - 1].parent1Gen && people [j].childNo == diseaseUp[diseaseUpCount - 1].parent1No) {
+                diseaseUp [diseaseUpCount] = people [j];
                 disease = people [j];
                 diseaseUpCount ++;
                 break;
             }
-            if (people [j].follow == true && people [j].generation == disease.parent2Gen && people [j].childNo == disease.parent2No) {
-                diseaseUp [i] = people [j];
+            if (people [j].follow == true && people [j].generation == diseaseUp[diseaseUpCount - 1].parent2Gen && people [j].childNo == diseaseUp[diseaseUpCount - 1].parent2No) {
+                diseaseUp [diseaseUpCount] = people [j];
                 disease = people[j];
                 diseaseUpCount ++;
                 break;
             }
 
+
         }
 
     }
     stop = false;
-    //now find mysteryUp
-    for (int i = 1; i < num_ancestor; i++) {
+    //cout << num_ancestor << endl;
+    for (int i = 0; i < num_ancestor; i++) {
+//        //cout << "GOING THROUGH people " << people[i].genotype << endl;
+//        //cout << people[i].genotype << endl;
         if (stop == true) {
             break;
         }
@@ -374,36 +412,41 @@ person ancestors::findCommonPoint (person disease, person mystery, person* disea
                 mysteryUpCount ++;
                 break;
             }
-            if (people [j].follow == true && people [j].generation == mystery.parent1Gen && people [j].childNo == mystery.parent1No) {
-                mysteryUp [i] = people [j];
+            if (people [j].follow == true && people [j].generation == mysteryUp[mysteryUpCount-1].parent1Gen && people [j].childNo == mysteryUp[mysteryUpCount-1].parent1No) {
+//                //cout << people[j].genotype << " 2937 " << mysteryUp[mysteryUpCount-1].genotype << endl;
+                mysteryUp [mysteryUpCount] = people [j];
                 mystery = people [j];
                 mysteryUpCount ++;
                 break;
             }
-            if (people [j].follow == true && people [j].generation == mystery.parent2Gen && people [j].childNo == mystery.parent2No) {
-                mysteryUp [i] = people [j];
+            if (people [j].follow == true && people [j].generation == mysteryUp[mysteryUpCount-1].parent2Gen && people [j].childNo == mysteryUp[mysteryUpCount-1].parent2No) {
+                mysteryUp [mysteryUpCount] = people [j];
                 mystery = people[j];
                 mysteryUpCount ++;
                 break;
             }
 
         }
+      //  //cout << "GOINGTHROUGHMYSTERYARRAY " << mysteryUp [mysteryUpCount].genotype << endl;
+
 
     }
 
     int mysteryLeastCommon = 0;
-    //for (int i = 0; i<diseaseUpCount; i++ ) cout << "COMMON POINT " << diseaseUp [i].genotype << endl;
-    for (int i = 0; i < mysteryUpCount && mysteryLeastCommon == 0; i++) {
+//    for (int i = 0; i<mysteryUpCount; i++ ) //cout << "mysteryUp " << mysteryUp [i].genotype << endl;
+    //cout << "mysteryupend" << endl;
+//    for (int i = 0; i<diseaseUpCount; i++ ) //cout << "diseaseUp " << diseaseUp [i].genotype << endl;
+    //cout <<"diseaseUpEnd" <<  endl;
 
-     //   cout << diseaseUp [i].genotype << endl;
-        for (int j = 0; j<diseaseUpCount && mysteryLeastCommon == 0; j++ ) {
+    for (int i = 0; i < mysteryUpCount && mysteryLeastCommon == 0; i++) {
+                for (int j = 0; j<diseaseUpCount && mysteryLeastCommon == 0; j++ ) {
             if (mysteryUp [i].childNo == diseaseUp [j].childNo && mysteryUp[i].generation == diseaseUp [j].generation) {
                 mysteryLeastCommon = i;
             }
         }
     }
 
-    int diseaseLeastCommon =0;
+    int diseaseLeastCommon = 0;
     for (int i = 0; i < diseaseUpCount && diseaseLeastCommon == 0; i++) {
 
         for (int j = 0; j<mysteryUpCount && diseaseLeastCommon == 0; j++) {
@@ -413,66 +456,158 @@ person ancestors::findCommonPoint (person disease, person mystery, person* disea
         }
     }
 
-
-    if (mysteryUp [mysteryLeastCommon].generation < diseaseUp [diseaseLeastCommon].generation) return mysteryUp [mysteryLeastCommon];
-    else return diseaseUp [diseaseLeastCommon];
+    ////cout << "commonpointindex" << mysteryCommonIndex << endl;
+    mysteryCommonIndex = mysteryLeastCommon;
+    return mysteryUp [mysteryLeastCommon];
 }
 
+
+probability ancestors::goingDownSpecial (string p1Genotype, bool p2Affected) {
+   probability mysteryChild;
+    mysteryChild.RR = 0;
+    mysteryChild.Rr = 0;
+    mysteryChild.rr = 0;
+    if (p2Affected == false) {
+        if (p1Genotype == "RR") {
+            //RRRR
+            mysteryChild.RR = 4;
+            //cout << "special RRRR" << endl;
+
+            //RRRr
+           // mysteryChild.RR += 2;
+            //mysteryChild.Rr += 2;
+        }
+        else if (p1Genotype == "Rr") {
+            //cout << "special RrRR" << endl;
+            //RrRR
+            mysteryChild.RR = 2;
+            mysteryChild.Rr = 2;
+            //cout << "doesn't print out " << mysteryChild.RR << endl;
+            //RrRr
+           // mysteryChild.RR += 1;
+           // mysteryChild.Rr += 2;
+           // mysteryChild.rr += 1;
+        }
+        else {
+            //rrRR
+            mysteryChild.Rr = 4;
+
+            //rrRr
+           // mysteryChild.Rr += 2;
+        }
+
+    }
+    else if (p2Affected == true) {
+        if (p1Genotype == "RR") {
+            //RRrr
+            mysteryChild.Rr = 4;
+        }
+        else if (p1Genotype == "Rr") {
+            //Rrrr
+            mysteryChild.Rr = 2;
+            mysteryChild.rr = 2;
+        }
+        else {
+            //rrrr
+            mysteryChild.rr = 4;
+        }
+    }
+    return mysteryChild;
+}
+
+
 probability ancestors::thecontrolpanel (person mystery) {
-    probability average;
+  probability average;
     int pCount = 0;
-    average.RR = 0;
-    average.Rr = 0;
-    average.rr = 0;
+    average.RR = 1;
+    average.Rr = 1;
+    average.rr = 1;
     //find disease person
     for (int i = 0; i<num_ancestor; i++) {
+        ////cout << people [i].genotype << " " << people[i].affected << endl;
         person diseaseUp[num_ancestor];
         person mysteryUp[num_ancestor];
         int mysteryUpCount;
-        if (people [i].affected == true) {
-            // find common point
-            // cout << "here1 " << i <<endl;
+        //if (people [i].affected == true) {
+        if (people [i].affected == true && (people[i].follow || people[i].generation == 0)) {
+            //find common point
+//            //cout << "FOUND PERSON WITH Disease" << people[i].genotype <<endl;
+            int mysteryCommonIndex;
+            person commonPoint = findCommonPoint (people[i], mystery, diseaseUp, mysteryUp, mysteryUpCount, mysteryCommonIndex);
 
-            person commonPoint = findCommonPoint (people[i], mystery, diseaseUp, mysteryUp, mysteryUpCount);
-
-           // commonPoint = people [4];
-            // cout << "HERE2 " << commonPoint.genotype << endl;
+            //commonPoint = people [4];
+            //cout << "COMMON POINT " << commonPoint.generation << endl;
+            //FIX THIS
             probability child;
             child.rr = 4;
 
             bool stop = false;
+
+            //cout << "HERE X0 " << endl;
+            stop = (diseaseUp [0].generation == 0);
             //go up to common point using disease array
-            for (int j = 0; j<num_ancestor && stop == false; j++) {
+            for (int j = 0; j<num_ancestor && stop == false && diseaseUp[j].generation != 0; j++) {
                 pCount ++;
-              //  cout << "pCount = " << pCount << endl;
-                //cout << "looking at: " << diseaseUp[j].genotype << endl;
+              //  //cout << "pCount = " << pCount << endl;
+                ////cout << "looking at: " << diseaseUp[j].genotype << endl;
+
+                //cout << "HERE X1 " << endl;
+
                 person childArray [num_ancestor];
                 int childArrayCount = 0;
                 //prepare childNumber + array + parentsAffectedOrNot
-                bool parent1Affected = false;
                 bool parent2Affected = false;
-                for (int k = 0; k<num_ancestor; k++) {
+                bool parent1Affected = false;
+
+                for (int k = 0; k<num_ancestor; k++) {  // Child array
 
                     if (diseaseUp[j].parent1No == people [k].parent1No && diseaseUp[j].parent1Gen == people [k].parent1Gen) {
-                        if (people[k].childNo != mystery.childNo && people[k].follow == true) {
+
+                        if (people[k].follow == true) {
                             childArray [childArrayCount] = people [k];
                              childArrayCount ++;
+//                            //cout <<"here3 " << childArray [childArrayCount - 1].genotype << endl;
                         }
-                       // cout << "HERE3 " << people [k].genotype <<endl;
-                        //cout << "HERE3 " << << endl;
+                       // //cout << "HERE3 " << people [k].genotype <<endl;
+                        ////cout << "HERE3 " << << endl;
 
                     }
+                    //problems
 
-                    if (diseaseUp[j].parent1No == diseaseUp[k].childNo && diseaseUp[j].parent1Gen == diseaseUp[k].childNo) parent1Affected = diseaseUp[k].affected;
-                    if (diseaseUp[j].parent2No == diseaseUp[k].childNo && diseaseUp[j].parent2Gen == diseaseUp[k].childNo) parent2Affected = diseaseUp[k].affected;
-                }
+                    if (diseaseUp[k].generation == 0 && diseaseUp[j].generation == 1) {
+                        parent1Affected = people[num_ancestor - 2].affected;
+                        parent2Affected = people[num_ancestor - 1].affected;
+                        //stop = true;
+//                        //cout << " this is generation 0 " <<people[i].genotype << " " << diseaseUp[k].affected << endl;
+                        //cout << "HERE X1 " << endl;
+                    }
+                    else {
+                        if (diseaseUp[j].follow == true && diseaseUp[j].parent1No == people[k].childNo && diseaseUp[j].parent1Gen == people[k].generation) {
+                            parent1Affected = diseaseUp[k].affected;
 
+//                            //cout << people[k].genotype << " this is affected " << people[k].affected << endl;
+                        }
+
+                        if (diseaseUp[j].follow == false && diseaseUp[j].parent2No == people[k].childNo && diseaseUp[j].parent2Gen == people[k].generation) {
+                            parent2Affected = diseaseUp[k].affected;
+
+//                            //cout << people[k].genotype << " this is affected " << people[k].affected << endl;
+                        }
+                    }
+
+                }   // end child arrary loop
+
+
+
+                //cout << endl;
                 //get probability of parents
                 //if (people[j].childNo == mystery.childNo && people[j].generation == mystery.generation)
                 if (child.RR == 0) child.RR = 1;
                 if (child.Rr == 0) child.Rr = 1;
                 if (child.rr == 0) child.rr = 1;
+
                 if (diseaseUp[j].affected == false) {
+                    //cout << "WE GO THROUGH HERE" << endl;
                     child.RR = child.RR * goingUpProbability (childArrayCount, childArray, "RR", parent1Affected, parent2Affected).RR;
                     child.Rr = child.RR * goingUpProbability (childArrayCount, childArray, "RR", parent1Affected, parent2Affected).Rr;
                     child.rr = child.RR * goingUpProbability (childArrayCount, childArray, "RR", parent1Affected, parent2Affected).rr;
@@ -481,99 +616,155 @@ probability ancestors::thecontrolpanel (person mystery) {
                     child.rr += child.Rr * goingUpProbability (childArrayCount, childArray, "Rr", parent1Affected, parent2Affected).rr;
                 }
                 else {
+                   //cout <<"should go through here" << endl;
                     child.RR = child.rr * goingUpProbability (childArrayCount, childArray, "rr", parent1Affected, parent2Affected).RR;
                     child.Rr = child.rr * goingUpProbability (childArrayCount, childArray, "rr", parent1Affected, parent2Affected).Rr;
                     child.rr = child.rr * goingUpProbability (childArrayCount, childArray, "rr", parent1Affected, parent2Affected).rr;
                 }
-                //cout << "RR " << child.RR << endl;
-                //cout << "Rr " << child.Rr << endl;
-                //cout << "rr " << child.rr << endl;
+                //cout << "RR goingUp " << child.RR << endl;
+                //cout << "Rr goingUp " << child.Rr << endl;
+                //cout << "rr goingUp " << child.rr << endl;
 
-              //  cout << "diseaseGEN " << diseaseUp[j].generation<< " GenerationOfCP " << commonPoint.generation << endl;
-                if (diseaseUp [j].generation - 1 == commonPoint.generation && diseaseUp[j].generation == commonPoint.generation) {
+              //  //cout << "diseaseGEN " << diseaseUp[j].generation<< " GenerationOfCP " << commonPoint.generation << endl;
+                if (diseaseUp [j].generation - 1 == commonPoint.generation || diseaseUp [j].generation == commonPoint.generation
+                    ) {
                     stop = true;
-                    //cout << "Stop is set " << diseaseUp[j].genotype << endl;
+//                    //cout << "Stop is set " << diseaseUp[j].genotype << endl;
+                    //cout << "HERE XSTOP " << endl;
                 }
 
 
-            }
+            }   // end of going up loop
 
             //go down to the mystery using mystery array
             stop = false;
-
+             bool mysteryIsOnlyChild = false;
             //find upper bound problem
-            for (int j = commonPoint.generation; j >= 0 && stop == false; j--) {
-                //cout << "WHAT MYSTERUP GOES THROUGHT "<<mysteryUp[j].genotype << endl;
+            for (int j = mysteryCommonIndex - 1; j >= 0 && stop == false; j--) {
+//                //cout << "WHAT MYSTERUP GOES through "<<mysteryUp[j].genotype << " " << j << endl;
+                //cout << j << endl;
                 person childArray [num_ancestor];
                 int childArrayCount = 0;
                 //prepare childNumber + array + parentsAffectedOrNot
-                bool parent1Affected = false;
                 bool parent2Affected = false;
+                bool parent1Affected = true;
 
                 for (int k = 0; k<num_ancestor; k++) {
-
-                    if (mysteryUp[j].childNo == people [k].parent1No && mysteryUp[j].generation == people [k].parent1Gen) {
-                       // cout << "HERE4 " << people[k].genotype << " " << people[k].childNo << " " << people[k].follow << endl;
-                        if (people[k].childNo != mystery.childNo && people[k].follow == true) {
+                    if (mysteryUp[j].parent1No == people [k].parent1No && mysteryUp[j].parent1Gen == people [k].parent1Gen) {
+//                       //cout << "HERE4 " << people[k].genotype << " " << people[k].childNo << " " << people[k].follow << endl;
+                        if (people[k].follow == true) {
                             childArray [childArrayCount] = people [k];
-                           // cout << "HERE3 " << people [k].genotype <<endl;
+//                            //cout << j << " HERE7 " << people [k].genotype << " ";
+                            childArrayCount ++;
                         }
 
                         //
-                        //cout << "HERE3 " << << endl;
-                        childArrayCount ++;
-                        //cout << childArray [k[ << endl]];
+                        ////cout << "HERE3 " << << endl;
+
+                        ////cout << childArray [k[ << endl]];
                     }
 
-
-                    if (people[j].parent1No == people[k].childNo && people[j].parent1Gen == people[k].childNo) parent1Affected = people[k].affected;
-                    if (people[j].parent2No == people[k].childNo && people[j].parent2Gen == people[k].childNo) parent2Affected = people[k].affected;
-
+                    mysteryIsOnlyChild = (childArrayCount == 0);
+                  //  //cout << people[j].genotype << " " people[k].genotype << endl;
+                    if (people[k].follow == false && mysteryUp[j].parent1No == people[k].childNo && mysteryUp[j].parent1Gen == people[k].generation) {
+                        parent2Affected = people[k].affected;
+                        //cout << "parent1affected "<<people[k].affected << endl;
+                    }
+                    if (people[k].follow == true && mysteryUp[j].parent1No == people[k].childNo && mysteryUp[j].parent1Gen == people[k].generation) {
+                        parent1Affected = people[k].affected;
+                        //cout << "parent1affected "<<people[k].affected << endl;
+                    }
 
                 }
-               // now for the long trek down
-               // cout << "RR of child before: " << child.RR << endl;
-               // cout << "Rr of child before " << child.Rr << endl;
+                //cout << endl;
+                //now for the long trek down
+               //cout << "RR of child before: " << child.RR << endl;
+               //cout << "Rr of child before " << child.Rr << endl;
                 //cout << "rr of child before: " << child.rr << endl;
                 if (child.RR == 0) child.RR = 1;
                 if (child.Rr == 0) child.Rr = 1;
                 if (child.rr == 0) child.rr = 1;
-                if (mysteryUp[j].affected == false) {
+//                //cout <<"TEST9" << mysteryUp[j].genotype << endl;
+
+                if (parent1Affected == false && mysteryIsOnlyChild == false) {
+                    //cout << "I AM HERE"<<endl;
                     int placeHolderRR;
                     int placeHolderRr;
                     if  (child.RR == 0)  placeHolderRR = 1;
                     else  placeHolderRR = child.RR;
-
                     if  (child.RR == 0)  placeHolderRr = 1;
                     else placeHolderRr = child.Rr;
-                    child.RR = placeHolderRR * goingDownProbability(childArray, childArrayCount, "RR", false).RR;
-                    child.Rr = placeHolderRR * goingDownProbability(childArray, childArrayCount, "RR", false).Rr;
-                    child.RR += placeHolderRr * goingDownProbability (childArray, childArrayCount, "Rr", false).RR;
-                    child.Rr += placeHolderRr * goingDownProbability (childArray, childArrayCount, "Rr", false).Rr;
-                    child.rr  = placeHolderRr * goingDownProbability (childArray, childArrayCount, "Rr", false).rr;
+                    child.RR = placeHolderRR * goingDownProbability(childArray, childArrayCount, "RR", parent2Affected).RR;
+                    child.Rr = placeHolderRR * goingDownProbability(childArray, childArrayCount, "RR", parent2Affected).Rr;
+                    //cout << "midway check " << child.RR << endl;
+                    //cout << "midway check " << child.Rr << endl;
+                  child.RR += placeHolderRr * goingDownProbability (childArray, childArrayCount, "Rr", parent2Affected).RR;
+                    child.Rr += placeHolderRr * goingDownProbability (childArray, childArrayCount, "Rr", parent2Affected).Rr;
+                    if (j==0) child.rr  = placeHolderRr * goingDownProbability (childArray, childArrayCount, "Rr", parent2Affected).rr;
 
                 }
-                else {
-                    child.rr = 4;
-                    child.RR = 1;
-                    child.Rr = 1;
+                else if (parent1Affected == true && mysteryIsOnlyChild == false){
+                    child.rr = goingDownProbability(childArray, childArrayCount, "rr", parent2Affected).rr;
+                    child.Rr = goingDownProbability(childArray, childArrayCount, "rr", parent2Affected).Rr;
+
+                }
+                //cout << "RR: " << child.RR << endl;
+                //cout << "Rr: " << child.Rr << endl;
+                //cout << "rr: " << child.rr << endl;
+                //cout << "parent2Affected" << parent2Affected << endl;
+                // Handle the 1st geneneration where the mystery case is
+                if (mysteryIsOnlyChild) {
+                    int placeHolderRR;
+                    int placeHolderRr;
+                    if  (child.RR == 0)  placeHolderRR = 1;
+                    else  placeHolderRR = child.RR;
+                    if  (child.RR == 0)  placeHolderRr = 1;
+                    else placeHolderRr = child.Rr;
+                    if (parent1Affected == false) {
+                        //cout << "parent2Affected" << parent2Affected << endl;
+                        child.RR = placeHolderRR * goingDownSpecial("RR", parent2Affected).RR;
+                        child.Rr = placeHolderRR * goingDownSpecial("RR", parent2Affected).Rr;
+                      //  //cout << "midway point " << "RR " <<goingDownSpecial("RR", parent2Affected).RR<<endl;
+                        child.RR += placeHolderRr * goingDownSpecial("Rr", parent2Affected).RR;
+                        //cout << "??? " << placeHolderRr << endl;
+                        child.Rr += placeHolderRr * goingDownSpecial("Rr", parent2Affected).Rr;
+                        child.rr = placeHolderRr * goingDownSpecial("Rr", parent2Affected).rr;
+                        //cout << "final check 1 " << goingDownSpecial("Rr", parent2Affected).RR << endl;
+                        //cout<<"Final check point " << child.RR << " Rr: " << child.Rr << " rr " << child.rr << endl;
+
+                    }
+                    else {
+                        int placeHolderrr;
+                        if (child.rr == 0) placeHolderrr = 1;
+                        else placeHolderrr = child.rr;
+                        child.Rr = placeHolderrr * goingDownSpecial("rr", parent2Affected).Rr;
+                        child.rr = placeHolderrr * goingDownSpecial("rr", parent2Affected).rr;
+
+                    }
+
                 }
 
-                if (mysteryUp [j].generation + 1 == mystery.generation) stop = true;
-                //cout << "RR of child: " << child.RR << endl;
-                //cout << "Rr of child " << child.Rr << endl;
-                //cout << "rr of child: " << child.rr << endl;
+                if (mysteryUp [j].generation -1  == mystery.generation) {
+                    stop = true;
+                }
+               // //cout << "RR of child: " << child.RR << endl;
+               // //cout << "Rr of child " << child.Rr << endl;
+            //    //cout << "rr of child: " << child.rr << endl;
             }
 
-            average.RR += child.RR;
-            average.Rr += child.Rr;
-            average.rr += child.rr;
+
+
+            if (child.RR != 1 && child.RR != 0)average.RR = average.RR * child.RR;
+            if (child.Rr != 1 && child.Rr != 0)average.Rr = average.Rr *  child.Rr;
+            if (child.rr != 1 && child.rr != 0)average.rr = average.rr * child.rr;
         }
+
     }
+
     return average;
 }
 
-
+/*
 void ancestors::display_tree(){
 
     // displays family_tree vector
@@ -581,30 +772,30 @@ void ancestors::display_tree(){
     {
         for (int jj = 0; jj < family_tree[ii].size(); ++jj)
         {
-            cout << family_tree[ii][jj];
+            //cout << family_tree[ii][jj];
         }
-        cout << endl;
+        //cout << endl;
     }
-    cout << endl;
+    //cout << endl;
     // displays people array
     for (int ii = 0; ii < people.size(); ++ii)
     {
-        cout << people[ii].affected;
-        cout << people[ii].is_parent;
-        cout << people[ii].follow;
-        cout << people[ii].generation;
-        cout << people[ii].childNo;
+        //cout << people[ii].affected;
+        //cout << people[ii].is_parent;
+        //cout << people[ii].follow;
+        //cout << people[ii].generation;
+        //cout << people[ii].childNo;
         if (people[ii].follow == 1)
         {
-            cout << people[ii].parent1No;
-            cout << people[ii].parent1Gen;
-            cout << people[ii].parent2No;
-            cout << people[ii].parent2Gen;
+            //cout << people[ii].parent1No;
+            //cout << people[ii].parent1Gen;
+            //cout << people[ii].parent2No;
+            //cout << people[ii].parent2Gen;
         }
-        cout << endl;
+        //cout << endl;
     }
-    cout << endl;
-}
+    //cout << endl;
+}*/
 
 
 int main ()
@@ -623,14 +814,14 @@ int main ()
 
     total = test.RR + test.Rr + test.rr;
 
-    chances << test.RR / total << endl;
-    chances << test.Rr / total << endl;
-    chances << test.rr / total << endl;
+     chances << test.RR / total << endl;
+     chances << test.Rr / total << endl;
+     chances << test.rr / total << endl;
 
-    // cout << test.RR / total * 100 << "%" << endl;
-    // cout << test.Rr / total * 100 << "%" << endl;
-    // cout << test.rr / total * 100 << "%" << endl;
+    // //cout << test.RR / total * 100 << "%" << endl;
+    // //cout << test.Rr / total * 100 << "%" << endl;
+    // //cout << test.rr / total * 100 << "%" << endl;
 
-    chances.close();
+     chances.close();
 }
 

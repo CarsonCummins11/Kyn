@@ -17,7 +17,6 @@ struct person {
     int parent1Gen;
     int parent2No;
     int parent2Gen;
-    string genotype = "nothere";
 };
 
 
@@ -56,6 +55,8 @@ public:
     void display_tree(); // Used for testing
     probability goingDownProbability (person childrenArray [], int arrayLength, string p1Genotype, bool p2Phenotype);
     probability goingUpProbability (int childNo, person childrenArray [], string KnownGenotype, bool parent1affected, bool parent2affected);
-    person findCommonPoint (person disease, person mystery, person* diseaseUp, person* mysteryUp, int&mysteryUpCount); //finds common point of disease and mystery person
+    //finds common point of disease and mystery person
+    person findCommonPoint (person disease, person mystery, person* diseaseUp, person* mysteryUp, int&mysteryUpCount, int& mysteryCommonIndex);
+    probability goingDownSpecial (string p1Genotype, bool p2Affected);
     probability thecontrolpanel (person mystery);
 };
