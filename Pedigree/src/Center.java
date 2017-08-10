@@ -429,13 +429,27 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			f.repaint();
 		} else if (e.getSource().equals(startCalc)||e.getSource().equals(calcMultBranch)||e.getSource().equals(calcSingleBranch)) {
 			if(e.getSource().equals(calcMultBranch)||IEEAV){
+				if (s.members.size() < 2 || s.lines.size() < 1) {
+					JOptionPane.showMessageDialog(f, "Please add at least two members with at least one connection");
+					return;
+				}
+				if (s.Parents[0] == null || s.Parents[1] == null) {
+					JOptionPane.showMessageDialog(f, "Please select two parents by double clicking");
+					return;
+				}
 			int[] xs = {s.Parents[0].X,s.Parents[1].X};
 			int[] ys = {s.Parents[0].Y,s.Parents[1].Y};
+			if(f.getTitle().equals("Tree Builder")||f.getTitle().contains("Recessive Autosomal Trait")){
 			double[] output =geneCalculator.calculateLikelihoods(s.lines, s.Relations, xs , ys);
-			  JOptionPane.showMessageDialog(f,"The likelihood of not showing the trait is %" + Double.toString(100*output[0]));
+			JOptionPane.showMessageDialog(f,"The likelihood of not showing the trait is %" + Double.toString(100*output[0]));
 			  JOptionPane.showMessageDialog(f, "The likelihood of carrying the trait without showing it is %"+ Double.toString(100*output[1]));
 			  JOptionPane.showMessageDialog(f,"The likelihood of showing the trait is %"+Double.toString(100*output[2]));
-			
+			}else{
+				double[] output =geneCalculatorDom.calculateLikelihoods(s.lines, s.Relations, xs , ys);
+				JOptionPane.showMessageDialog(f,"The likelihood of not showing the trait is %" + Double.toString(100*output[0]));
+				  JOptionPane.showMessageDialog(f, "The likelihood of carrying the trait without showing it is %"+ Double.toString(100*output[1]));
+				  JOptionPane.showMessageDialog(f,"The likelihood of showing the trait is %"+Double.toString(100*output[2]));
+			}
 			}else if(e.getSource().equals(calcSingleBranch)){
 			String familyTree = buildStringFromTree();
 			if (familyTree != null) {

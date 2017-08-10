@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-public class geneCalculator {
+public class geneCalculatorDom {
 
 	public static double[] calculateLikelihoods(ArrayList<Member[]> liness, ArrayList<Integer> Relations, int[] XofSelected, int[] YofSelected){
 	ArrayList<Member[]> lines = liness;
@@ -69,29 +69,18 @@ public class geneCalculator {
 	private static double procCarrierChance(Member m1, Member m2) {
 		double carChance1 = carrierChance(m1);
 		double carChance2 = carrierChance(m2);
-		if(carChance1==0&&carChance2==0){
-			return 0;
-		}else if(carChance1 ==0){
-			return .5*carChance2;
-		}else if(carChance2 ==0){
-			return .5*carChance1;
-		}else{
 			return .75*carChance1*carChance2;
-		}
 	}
 	private static double carrierChance(Member m) {
-		if(m.Carrier==true){
-			return 0.0;
-		}
 		if(m.Parents.size()==2){
 			return procCarrierChance(m.Parents.get(0), m.Parents.get(1));
 		}else{
 			double carrierChance = 1.0;
 			for (int i = 0; i < m.Children.size(); i++) {
-				if(m.Children.get(i).Carrier){
+				if(!m.Children.get(i).Carrier){
 					return 1.0;
 				}else{
-					carrierChance= carrierChance*(m.Married.get(0).Carrier?.5:75);
+					carrierChance = carrierChance*.25;
 				}
 			}
 			return carrierChance;
@@ -102,13 +91,15 @@ public class geneCalculator {
 	}
 	private static double affectedChance(Member m1, Member m2) {
 		if(m1.Carrier&&m2.Carrier){
-			return 1.0;
+			double carChance1 = carrierChance(m1);
+			double carChance2 = carrierChance(m2);
+			return .75*carChance1*carChance2;
 		}else if(m1.Carrier&&!m2.Carrier){
-			return 0.5*carrierChance(m2);
-		}else if(!m1.Carrier&&m2.Carrier){
 			return 0.5*carrierChance(m1);
+		}else if(!m1.Carrier&&m2.Carrier){
+			return 0.5*carrierChance(m2);
 		}else{
-			return .25*carrierChance(m1)*carrierChance(m2);
+			return 0;
 		}
 	}
 	public static int getRow(Member mm, int jumpsToTake) {
