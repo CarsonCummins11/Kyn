@@ -822,6 +822,9 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
+		if(s.relmenu!=null||s.menu!=null){
+			return;
+		}
 		int rolls = e.getWheelRotation();
 		double zoomPrevious = s.zoom;
 		double zoomSpeed = .05;
@@ -852,6 +855,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 					m.X += (int) Math.round((-rolls * zoomSpeed) * ((m.X + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2)) - xx));
 					m.Y += (int) Math.round((-rolls * zoomSpeed) * ((m.Y + (int) Math.round(s.zoom * Member.IMAGE_SIZE / 2)) - yy));
 				}
+				
 			}
 		} else if (e.isControlDown()) {
 			for (int i = 0; i < s.members.size(); i++) {
