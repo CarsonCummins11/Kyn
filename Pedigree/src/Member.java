@@ -25,7 +25,6 @@ public class Member {
 	int column = -1;
 	int row = -1;
 	double carrierChance;
-
 	public Member(int G, boolean C, int x, int y) {
 		Gender = G;
 		Carrier = C;

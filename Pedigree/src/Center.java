@@ -46,7 +46,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	final static Color THEME_COLOR = new Color(103,173,110);
 	public static final String DATA_OUTPUT_FILE = "Chances.txt";
 	public static final String DATA_INPUT_FILE = "Ancestors.tree";
-	public static final boolean USE_JAVA_CALC = true;
+	public static boolean IEEAV = true;
 	JMenuBar bar = new JMenuBar();
 	JMenu fileActions = new JMenu("File");
 	JMenu editActions = new JMenu("Edit");
@@ -428,17 +428,13 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			s.members.add(mem);
 			f.repaint();
 		} else if (e.getSource().equals(startCalc)||e.getSource().equals(calcMultBranch)||e.getSource().equals(calcSingleBranch)) {
-			if(e.getSource().equals(calcMultBranch)){
+			if(e.getSource().equals(calcMultBranch)||IEEAV){
 			int[] xs = {s.Parents[0].X,s.Parents[1].X};
 			int[] ys = {s.Parents[0].Y,s.Parents[1].Y};
-			System.out.println(xs[0]);
-			System.out.println(ys[0]);
-			System.out.println(xs[1]);
-			System.out.println(ys[1]);
 			double[] output =geneCalculator.calculateLikelihoods(s.lines, s.Relations, xs , ys);
-			  JOptionPane.showMessageDialog(f,"The likelihood of not having the trait is " + Double.toString(output[0]));
-			  JOptionPane.showMessageDialog(f, "The likelihood of carrying the trait is"+ Double.toString(output[1]));
-			  JOptionPane.showMessageDialog(f,"The likelihood of showing the trait is"+Double.toString(output[2]));
+			  JOptionPane.showMessageDialog(f,"The likelihood of not showing the trait is %" + Double.toString(100*output[0]));
+			  JOptionPane.showMessageDialog(f, "The likelihood of carrying the trait without showing it is %"+ Double.toString(100*output[1]));
+			  JOptionPane.showMessageDialog(f,"The likelihood of showing the trait is %"+Double.toString(100*output[2]));
 			
 			}else if(e.getSource().equals(calcSingleBranch)){
 			String familyTree = buildStringFromTree();
@@ -457,9 +453,9 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 					 String two = fScan.nextLine();
 					 String three = fScan.nextLine();
 					 if(getAllInts(one).length()>0&&getAllInts(two).length()>0&&getAllInts(three).length()>0){
-					  JOptionPane.showMessageDialog(f,"The likelihood of not having the trait is " + Double.parseDouble(one) );
-					  JOptionPane.showMessageDialog(f, "The likelihood of carrying the trait is"+ Double.parseDouble(two));
-					  JOptionPane.showMessageDialog(f,"The likelihood of showing the trait is"+Double.parseDouble(three) );
+					  JOptionPane.showMessageDialog(f,"The likelihood of not showing the trait is %" + 100*Double.parseDouble(one) );
+					  JOptionPane.showMessageDialog(f, "The likelihood of carrying without showing the trait is %"+ 100*Double.parseDouble(two));
+					  JOptionPane.showMessageDialog(f,"The likelihood of showing the trait is %"+100*Double.parseDouble(three) );
 						 //outputBox.setText("The likelihood of not having the trait is " + Double.parseDouble(one)+"\r\n");
 					  //outputBox.setText(outputBox.getText()+"The likelihood of carrying the trait is"+ Double.parseDouble(two)+"\r\n");
 					  //outputBox.setText(outputBox.getText()+"The likelihood of showing the trait is"+Double.parseDouble(three));
