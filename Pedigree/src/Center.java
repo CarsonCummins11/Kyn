@@ -46,7 +46,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	final static Color THEME_COLOR = new Color(103,173,110);
 	public static final String DATA_OUTPUT_FILE = "Chances.txt";
 	public static final String DATA_INPUT_FILE = "Ancestors.tree";
-	public static boolean IEEAV = true;
+	public static boolean IEEAV = false;
 	JMenuBar bar = new JMenuBar();
 	JMenu fileActions = new JMenu("File");
 	JMenu editActions = new JMenu("Edit");
