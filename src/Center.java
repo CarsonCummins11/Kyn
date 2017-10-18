@@ -439,7 +439,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 				}
 			int[] xs = {s.Parents[0].X,s.Parents[1].X};
 			int[] ys = {s.Parents[0].Y,s.Parents[1].Y};
-			if(f.getTitle().equals("Tree Builder")||f.getTitle().contains("Recessive Autosomal Trait")){
+			if(f.getTitle().equals("Tree Builder")||f.getTitle().contains("Recessive Autosomal Trait")||f.getTitle().contains("Recessive X-Linked")){
 			double[] output =geneCalculator.calculateLikelihoods(s.lines, s.Relations, xs , ys);
 			JOptionPane.showMessageDialog(f,"The likelihood of not showing the trait is %" + Double.toString(100*output[0]));
 			  JOptionPane.showMessageDialog(f, "The likelihood of carrying the trait without showing it is %"+ Double.toString(100*output[1]));
