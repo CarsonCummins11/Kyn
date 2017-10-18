@@ -1,0 +1,150 @@
+0 = recessive autosomal
+1 = dominant autosomal
+2 = recessive x-linked (chromosomal)
+3 = dominant x-linked (chromosomal)
+4 = can blend (based on multiple genes)
+5 = mutation
+6 = not inherited
+* = multiple ways to inherit, may not want to use
+**
+Red Hair: 4
+Brown Hair: 4
+Black Hair: 4
+Blonde Hair: 4
+**
+Blue Eyes: 4
+Brown Eyes: 4
+Green Eyes: 4
+Grey Eyes: 4
+Hazel Eyes: 4
+**
+Attatched Earlobe: 0
+Unattatched Earlobe: 1
+**
+Widow's Peak: 1
+Straight Hairline: 0
+**
+Dimples: 1
+Freckles: 1
+Able to taste PTC: 1
+Non-pigmented Iris: 0
+Bent Little Finger: 1
+Hitchhiker’s Thumb: 4
+Red-Green Colorblind: 2
+**
+3-hydroxyacyl-CoA dehydrogenase deficiency: 0
+Abetalipoproteinemia: 0
+Adiposis dolorosa: when inherited, 1
+*Achondroplasia: 20% 1, 80% 5
+Albinism: 0
+Alkaptonuria: 0
+Alpha Thalassemia: 0
+*Amyotrophic lateral sclerosis: 10% 1, 90% 5
+Angelman Syndrome: 6
+Ataxia-Telangiectasia: 0
+Bardet-Biedl Syndrome: 0
+Bartter's Syndrome: 0
+Batten Disease: 0
+Becker muscular dystrophy: 2
+Beta thalassemia: 0
+Bloom’s Syndrome: 0
+Bruton's Disease: 2
+Canavan disease: 0
+Carnitine Palmitoyltransferase 2 Deficiency: 0
+Celiac Disease: Unknown, but clusters in families
+Charcot-Marie-Tooth disease: CMT1: 1, CMT2: 1, CMT4: 0, CMTX: 3
+Chédiak-Higashi Syndrome: 0
+Chronic Granulomatous Disease: usually 2
+Congenital Disorder of Glycosylation Ia: 0
+Cori's Disease: 0
+Crouzon syndrome: 1
+Cystic fibrosis: 0
+Down syndrome: 6, can be detected by pre-natal testing
+Duchenne muscular dystrophy: 2
+Edward's syndrome: 6
+Ehlers-Danlos Syndrome type 1: 1
+Ehlers-Danlos Syndrome type 4: 1
+Ehlers-Danlos Syndrome type 6: 0
+Ehlers-Danlos Syndrome type 7: 6
+Ehlers-Danlos Syndrome type 9: 2
+Familial Mediterranean Fever: 0
+Familial dysautonomia: 0
+*Fanconi anemia: 0 (Ocassionaly 2)
+Fragile X syndrome: 3
+Galactosemia: 0
+Gaucher Disease: 0
+Glutaric aciduria type 1: 0
+Glucose-6-phosphate dehydrogenase deficiency: 2
+Hartnup's Disease: 0
+Hemochromatosis type 1: 0
+Hemochromatosis type 2: 0
+Hemochromatosis type 3: 0
+Hemochromatosis type 4: 1
+Hemophilia A: 2
+Hemophilia B: 2
+Hemophagocytic lymphohistiocytosis: 0
+Hereditary fructose intolerance: 0
+Hereditary hemorrhagic telangiectasia: 1
+*Hereditary spherocytosis: 75% 1, 25% 0
+Holoprosencephaly: 1
+Holt-Oram syndrome: 1
+Homocystinuria: 0
+Hunter syndrome: 2
+Huntington's disease: 1
+Hutchinson-Gilford progeria syndrome: 1
+Hypercholesterolemia: 1
+Hypokalemic periodic paralysis: 1
+Hypophosphatemic rickets: 3
+Incontinentia pigmenti: 3
+Jackson-Weiss Syndrome: 1
+Job's Syndrome: 1
+*Joubert Syndrome 2: most 0, occasionally 2
+Kartagener's Syndrome: 0
+Klinefelter's Syndrome: 6
+Lesch-Nyhan Syndrome: 2
+Lynch syndrome: 1
+Lysosomal acid lipase deficiency: 0
+Maple syrup urine disease: 0
+*Marfan syndrome: 75% 1, 25% 5
+McArdle's Disease: 0
+Menkes disease: 2
+Metachromatic leukodystrophy: 0
+Mucopolysaccharidosis type 1: 0
+Mucolipidosis type 4: 0
+Myotonic dystrophy type 1: 1
+Myotonic dystrophy type 2: 1
+Niemann-Pick disease: 0
+Nemaline Myopathy: 0
+Neurofibromatosis type 1: 1
+Noonan Syndrome: 1
+Norrie syndrome: 2
+Oculocutaneous albinism type 2: 0
+Osteogenesis imperfecta: 1
+Patau's Syndrome: 6
+Phenylketonuria: 0
+Polycystic kidney disease: 1
+Pompe's disease: 0
+Prader-Willi Syndrome: 6
+Rett's syndrome: 3
+Severe Combined Immunodeficiency: 2
+Sickle cell anemia: 0
+Smith-Lemli-Opitz syndrome: 0
+*Spastic paraplegia 4: most 1, some 5
+Spinal Muscular Atrophy type 1: 0
+Spinal Muscular Atrophy type 2: 0
+Spinal Muscular Atrophy type 3: 0
+Spinal Muscular Atrophy type 4: 0
+Spondyloepiphyseal dysplasia congenita: 1
+Tay-Sachs disease: 0
+Trimethylaminuria: 0
+Triple X syndrome: 6
+*Tuberous sclerosis complex: 33% 1, 66% 5
+Turner's Syndrome: 6
+Tyrosinemia 1: 0
+Usher Syndrome: 0
+Von Gierke's Disease: 0
+Von Hippel-Lindau syndrome: 1
+Walker-Warburg Syndrome: 0
+Wilson Disease: 0
+Xeroderma Pigmentosum: 0
+Zellweger Syndrome: 0
