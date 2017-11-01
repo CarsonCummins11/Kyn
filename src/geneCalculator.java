@@ -91,7 +91,7 @@ public class geneCalculator {
 				if(m.Children.get(i).Carrier){
 					return 1.0;
 				}else{
-					carrierChance= carrierChance*(m.Married.get(0).Carrier?.5:75);
+					carrierChance= carrierChance*(m.Married.get(0).Carrier?.5:.75);
 				}
 			}
 			return carrierChance;

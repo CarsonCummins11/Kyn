@@ -51,21 +51,18 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 	JMenu fileActions = new JMenu("File");
 	JMenu editActions = new JMenu("Edit");
 	JMenu calcActions = new JMenu("Calculate");
-	JMenuItem calcSingleBranch = new JMenuItem("Single Branch");
-	JMenuItem calcMultBranch = new JMenuItem("Multiple Branches");
+	JMenuItem calcSingleBranch = new JMenuItem("Calculate");
 	JMenuItem addMemberAction = new JMenuItem("Add Member");
 	JMenuItem saveFile = new JMenuItem("Save");
 	JMenuItem LoadFile = new JMenuItem("Load");
 	JMenuItem searchTraits = new JMenuItem("Search Traits");
 	public Center() {
-		calcActions.add(calcMultBranch);
 		calcActions.add(calcSingleBranch);
 		editActions.add(addMemberAction);
 		editActions.add(searchTraits);
 		fileActions.add(saveFile);
 		fileActions.add(LoadFile);
 		LoadFile.addActionListener(this);
-		calcMultBranch.addActionListener(this);
 		calcSingleBranch.addActionListener(this);
 		addMemberAction.addActionListener(this);
 		searchTraits.addActionListener(this);
@@ -118,11 +115,9 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 		s.members = mems;
 		s.Relations = rels;
 		s.lines = lins;
-		calcActions.add(calcMultBranch);
 		calcActions.add(calcSingleBranch);
 		editActions.add(addMemberAction);
 		fileActions.add(saveFile);
-		calcMultBranch.addActionListener(this);
 		calcSingleBranch.addActionListener(this);
 		addMemberAction.addActionListener(this);
 		saveFile.addActionListener(this);
@@ -427,8 +422,8 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			Member mem = new Member(Member.MALE, false, 70, 0);
 			s.members.add(mem);
 			f.repaint();
-		} else if (e.getSource().equals(startCalc)||e.getSource().equals(calcMultBranch)||e.getSource().equals(calcSingleBranch)) {
-			if(e.getSource().equals(calcMultBranch)||IEEAV){
+		} else if (e.getSource().equals(startCalc)||e.getSource().equals(calcSingleBranch)) {
+			if(e.getSource().equals(calcSingleBranch)||IEEAV){
 				if (s.members.size() < 2 || s.lines.size() < 1) {
 					JOptionPane.showMessageDialog(f, "Please add at least two members with at least one connection");
 					return;
@@ -450,46 +445,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 				  JOptionPane.showMessageDialog(f, "The likelihood of carrying the trait without showing it is %"+ Double.toString(100*output[1]));
 				  JOptionPane.showMessageDialog(f,"The likelihood of showing the trait is %"+Double.toString(100*output[2]));
 			}
-			}else if(e.getSource().equals(calcSingleBranch)){
-			String familyTree = buildStringFromTree();
-			if (familyTree != null) {
-				try {					
-					PrintWriter write = new PrintWriter(DATA_INPUT_FILE);
-					write.print(familyTree);
-					write.close();
-					 Process p; 
-					 try { 
-					p = Runtime.getRuntime().exec("PedigreeAnalysis.exe"); 
-					try {
-					  p.waitFor(); 
-					  Scanner fScan = new Scanner(new File(DATA_OUTPUT_FILE)); 
-					 String one = fScan.nextLine();
-					 String two = fScan.nextLine();
-					 String three = fScan.nextLine();
-					 if(getAllInts(one).length()>0&&getAllInts(two).length()>0&&getAllInts(three).length()>0){
-					  JOptionPane.showMessageDialog(f,"The likelihood of not showing the trait is %" + 100*Double.parseDouble(one) );
-					  JOptionPane.showMessageDialog(f, "The likelihood of carrying without showing the trait is %"+ 100*Double.parseDouble(two));
-					  JOptionPane.showMessageDialog(f,"The likelihood of showing the trait is %"+100*Double.parseDouble(three) );
-						 //outputBox.setText("The likelihood of not having the trait is " + Double.parseDouble(one)+"\r\n");
-					  //outputBox.setText(outputBox.getText()+"The likelihood of carrying the trait is"+ Double.parseDouble(two)+"\r\n");
-					  //outputBox.setText(outputBox.getText()+"The likelihood of showing the trait is"+Double.parseDouble(three));
-					 }else{
-						 JOptionPane.showMessageDialog(f,"No record of trait, or it was spelled incorrectly");
-					 }
-					 fScan.close(); 
-					 } catch (InterruptedException e1) {
-					  e1.printStackTrace(); 
-					  } 
-					} catch (IOException e1) {
-					  e1.printStackTrace(); 
-					  }
-				} catch (FileNotFoundException e1) {
-					e1.printStackTrace();
-				}
-			} else {
-				return;
-			}
-			}
+			
 		
 		} else if (e.getSource().equals(searchBar)) {
 			try {
@@ -570,6 +526,7 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 			}else{
 				JOptionPane.showMessageDialog(f, "Not the correct file format");
 			}
+		}
 		}
 
 	}
@@ -754,15 +711,6 @@ public class Center implements MouseListener, ActionListener, MouseMotionListene
 
 		}
 		ret = ret.substring(0, ret.length()-2);
-		}
-		return ret;
-	}
-	private String getAllInts(String text) {
-		String ret = "";
-		for (int i = 0; i < text.length(); i++) {
-			if (Character.isDigit(text.charAt(i))) {
-				ret += text.charAt(i);
-			}
 		}
 		return ret;
 	}
